@@ -1,0 +1,39 @@
+plugins {
+    id 'application'
+}
+
+apply from: "$rootDir/gradle/versioning.gradle"
+
+sourceCompatibility = '17'
+targetCompatibility = '17'
+
+compileJava {
+    options.compilerArgs.addAll(['--release', '17'])
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'info.picocli:picocli:4.7.4'
+    implementation 'info.picocli:picocli-codegen:4.7.4'
+    annotationProcessor 'info.picocli:picocli-codegen:4.7.4'
+
+    
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.9.1'
+}
+
+application {
+    mainClass = 'ch.so.agi.csv2parquet.App'
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
+
+run {
+    //args = ["--help"]
+    //args = ["--directory=/Users/stefan/tmp/ili2repo/models/"]
+    args = ["--config=src/test/data/config.ini", "--input=src/test/data/bewilligte_erdwaermeanlagen.csv", "--output=build/"]
+}
