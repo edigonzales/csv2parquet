@@ -12,15 +12,29 @@ compileJava {
 }
 
 repositories {
+    maven { url "https://jars.interlis.ch" }
     mavenCentral()
+}
+
+configurations.all {
+    resolutionStrategy { 
+        force 'ch.interlis:ili2c-tool:5.2.8' 
+        force 'ch.interlis:ili2c-core:5.2.8'
+        force 'ch.interlis:ili2gpkg:4.9.0'
+    }
 }
 
 dependencies {
     implementation 'info.picocli:picocli:4.7.4'
     implementation 'info.picocli:picocli-codegen:4.7.4'
     annotationProcessor 'info.picocli:picocli-codegen:4.7.4'
-
     
+    implementation 'ch.interlis:iox-ili:1.21.18'
+    //implementation('ch.interlis:iox-wkf:1.1.0') {
+      //  exclude group: 'org.geotools'
+    //} // Braucht es nur wegen ein paar Konstanten für CSV-Settings.
+    implementation 'io.github.sogis:iox-parquet:0.0.14'
+        
     testImplementation 'org.junit.jupiter:junit-jupiter:5.9.1'
 }
 
@@ -35,5 +49,5 @@ tasks.named('test') {
 run {
     //args = ["--help"]
     //args = ["--directory=/Users/stefan/tmp/ili2repo/models/"]
-    args = ["--config=src/test/data/config.ini", "--input=src/test/data/bewilligte_erdwaermeanlagen.csv", "--output=build/"]
+    args = ["--config=src/test/data/config-default.ini", "--input=src/test/data/bewilligte_erdwaermeanlagen.csv", "--output=build/"]
 }
