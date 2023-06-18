@@ -39,20 +39,32 @@ public class App implements Callable<Integer> {
         
         System.out.println("Hallo Welt.");
         
-        CsvSettings settings = new CsvSettings();
+        // Config-File parsen und die Prosanamen der Parameter auf die technischen Namen mappen.
+        // Die technischen Namen sind nicht dazu gedacht von Benutzern in eine Datei zu tippen.
+        // Nachtrag: Ist im Prinzip unnötig und ich könnte eine Abürzung nehmen, da die Parameter 
+        // im CsvReader nicht direkt mit Settings gesteuert werden, sondern explizit mit Setter-
+        // Methoden. 
+        Settings settings = new Settings();
         ValidationConfig config = IniFileReader.readFile(configFile);
         
         String firstLineIsHeader = config.getConfigValue(CsvConfig.SETTING_SECTION_PARAMETER, CsvConfig.SETTING_FIRSTLINE_IS_HEADER);
-        settings.setValue(CsvConfig.SETTING_FIRSTLINE_IS_HEADER, Boolean.parseBoolean(firstLineIsHeader) ? CsvConfig.SETTING_FIRSTLINE_AS_HEADER : CsvConfig.SETTING_FIRSTLINE_AS_VALUE);
+        settings.setValue(IoxWkfConfig.SETTING_FIRSTLINE,
+                Boolean.parseBoolean(firstLineIsHeader) ? IoxWkfConfig.SETTING_FIRSTLINE_AS_HEADER : IoxWkfConfig.SETTING_FIRSTLINE_AS_VALUE);
         
         String valueDelimiter = config.getConfigValue(CsvConfig.SETTING_SECTION_PARAMETER, CsvConfig.SETTING_VALUEDELIMITER);
-        settings.setValue(CsvConfig.SETTING_VALUEDELIMITER, valueDelimiter.replace("\\", ""));
+        if (valueDelimiter != null) {
+            settings.setValue(IoxWkfConfig.SETTING_VALUEDELIMITER, valueDelimiter.replace("\\", ""));            
+        }
 
         String valueSeparator = config.getConfigValue(CsvConfig.SETTING_SECTION_PARAMETER, CsvConfig.SETTING_VALUESEPARATOR);
-        settings.setValue(CsvConfig.SETTING_VALUESEPARATOR, valueSeparator.replace("\\", ""));
+        if (valueSeparator != null) {
+            settings.setValue(IoxWkfConfig.SETTING_VALUESEPARATOR, valueSeparator.replace("\\", ""));            
+        }
 
         String encoding = config.getConfigValue(CsvConfig.SETTING_SECTION_PARAMETER, CsvConfig.SETTING_ENCODING);
-        settings.setValue(CsvReader.ENCODING, encoding);
+        if (encoding != null) {
+            settings.setValue(CsvReader.ENCODING, encoding);   
+        }
         
         System.out.println(settings);
 

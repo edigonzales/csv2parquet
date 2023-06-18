@@ -5,11 +5,19 @@ import java.nio.file.Paths;
 
 import org.junit.jupiter.api.Test;
 
+import ch.ehi.basics.settings.Settings;
+import ch.interlis.iox.IoxException;
+
 public class Csv2ParquetTest {
     @Test
-    public void no_model_set_Ok() {
+    public void default_config_and_no_model_set_Ok() throws IoxException {
         // Prepare
-        CsvSettings settings = new CsvSettings();
+        Settings settings = new Settings();
+        settings.setValue(IoxWkfConfig.SETTING_FIRSTLINE, IoxWkfConfig.SETTING_FIRSTLINE_AS_HEADER);
+        settings.setValue(IoxWkfConfig.SETTING_VALUEDELIMITER, "\"");            
+        settings.setValue(IoxWkfConfig.SETTING_VALUESEPARATOR, ";");            
+
+        
         Path csvPath = Paths.get("src/test/data/bewilligte_erdwaermeanlagen.csv");
         Path outputPath = Paths.get("build/");
         
