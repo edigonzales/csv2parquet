@@ -3,6 +3,7 @@ package ch.so.agi.csv2parquet;
 import java.io.File;
 import java.util.concurrent.Callable;
 
+import ch.ehi.basics.logging.EhiLogger;
 import ch.ehi.basics.settings.Settings;
 import ch.interlis.iom_j.csv.CsvReader;
 import ch.interlis.iox_j.inifile.IniFileReader;
@@ -33,12 +34,15 @@ public class App implements Callable<Integer> {
     
     @Option(names = { "-o", "--output" }, required = false, description = "The output directory where the resulting parquet file is written to.") 
     File outputDir;
-
+    
+    @Option(names = { "--trace" }, required = false, description = "Enable trace logging.") 
+    Boolean trace;
+    
     @Override
     public Integer call() throws Exception {
         
-        System.out.println("Hallo Welt.");
-        
+        EhiLogger.getInstance().setTraceFilter(!trace);
+
         // Config-File parsen und die Prosanamen der Parameter auf die technischen Namen mappen.
         // Die technischen Namen sind nicht dazu gedacht von Benutzern in eine Datei zu tippen.
         // Nachtrag: Ist im Prinzip unnötig und ich könnte eine Abürzung nehmen, da die Parameter 
