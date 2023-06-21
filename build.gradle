@@ -34,7 +34,8 @@ dependencies {
       //  exclude group: 'org.geotools'
     //} // Braucht es nur wegen ein paar Konstanten für CSV-Settings.
     implementation 'io.github.sogis:iox-parquet:0.0.14'
-        
+    implementation 'commons-io:commons-io:2.13.0'
+    
     testImplementation 'org.junit.jupiter:junit-jupiter:5.9.1'
 }
 
