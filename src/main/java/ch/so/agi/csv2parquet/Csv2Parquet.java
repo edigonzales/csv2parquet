@@ -2,6 +2,8 @@ package ch.so.agi.csv2parquet;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.commons.io.FilenameUtils;
 
@@ -16,18 +18,15 @@ import ch.interlis.iox_j.EndBasketEvent;
 import ch.interlis.iox_j.EndTransferEvent;
 import ch.interlis.iox_j.ObjectEvent;
 import ch.interlis.iox_j.StartTransferEvent;
+import ch.interlis.ioxwkf.parquet.ParquetAttributeDescriptor;
 import ch.interlis.ioxwkf.parquet.ParquetWriter;
 
 public class Csv2Parquet {
     
     public boolean run(Path csvPath, Path outputPath, Settings config) throws IoxException {
+      EhiLogger.getInstance().setTraceFilter(false);
         
-        System.out.println(config);
         String csvBaseName = FilenameUtils.getBaseName(csvPath.getFileName().toString());
-        
-        // Weil erstes Element null-Werte hat, fehlen Attribute.
-        // was liefert CSV-Reader genau?
-        // Bekommt man irgendwie "Schema"? Falls ja: String-only Schema für Writer.
         ParquetWriter writer = new ParquetWriter(Paths.get(outputPath.toString(), csvBaseName + ".parquet").toFile());
         
         CsvReader reader = new CsvReader(csvPath.toFile());
@@ -35,7 +34,7 @@ public class Csv2Parquet {
         boolean firstLineIsHeader = false;
         if(config.getValue(IoxWkfConfig.SETTING_FIRSTLINE) != null) {
             firstLineIsHeader=config.getValue(IoxWkfConfig.SETTING_FIRSTLINE).equals(IoxWkfConfig.SETTING_FIRSTLINE_AS_HEADER);
-        }
+        } 
         reader.setFirstLineIsHeader(firstLineIsHeader);
         EhiLogger.traceState("first line is "+(firstLineIsHeader?"header":"data"));
 
@@ -43,27 +42,51 @@ public class Csv2Parquet {
         if(valueDelimiter != null) {
             reader.setValueDelimiter(valueDelimiter.charAt(0));
             EhiLogger.traceState("valueDelimiter <"+valueDelimiter+">.");
+        } else {
+            reader.setValueDelimiter(IoxWkfConfig.SETTING_VALUEDELIMITER_DEFAULT);
+            EhiLogger.traceState("valueDelimiter <"+IoxWkfConfig.SETTING_VALUEDELIMITER_DEFAULT+">.");
         }
+
         String valueSeparator=config.getValue(IoxWkfConfig.SETTING_VALUESEPARATOR);
         if(valueSeparator != null) {
             reader.setValueSeparator(valueSeparator.charAt(0));
             EhiLogger.traceState("valueSeparator <"+valueSeparator+">.");
+        } else {
+            reader.setValueSeparator(IoxWkfConfig.SETTING_VALUESEPARATOR_DEFAULT);
+            EhiLogger.traceState("valueSeparator <"+IoxWkfConfig.SETTING_VALUESEPARATOR_DEFAULT+">.");
         }
-
+        
+        String[] attrs = null;
+        
         IoxEvent event = reader.read();
+
         while (event instanceof IoxEvent) {
-            event = reader.read();
+            //event = reader.read();
             if (event instanceof ObjectEvent) {
-                                
-                ObjectEvent iomObjEvent = (ObjectEvent) event;
-                IomObject iomObj = iomObjEvent.getIomObject();
+                if (attrs == null) {
+                    attrs = reader.getAttributes();
+                    
+                    // Funktioniert, falls die Reihenfolge garantiert ist.
+                    // Man muss die Attribute explizit setzen. Sonst kann 
+                    // passieren, dass Attribute komplett fehlen, weil das
+                    // erste Objekt analysiert wird und einige Attribute davon
+                    // null sind und im IomObjekt nicht vorkommen.
+                    List<ParquetAttributeDescriptor> attrDescs = new ArrayList<>();
+                    for(String attrName : attrs) {                        
+                        ParquetAttributeDescriptor attrDesc = new ParquetAttributeDescriptor();
+                        attrDesc.setAttributeName(attrName);
+                        attrDesc.setBinding(String.class);
+                        attrDescs.add(attrDesc);
+                    }
+                    writer.setAttributeDescriptors(attrDescs);
+                }
+                
+//                ObjectEvent iomObjEvent = (ObjectEvent) event;
+//                IomObject iomObj = iomObjEvent.getIomObject();
                 
                 writer.write(event);
-
-    
-//                System.out.println(iomObj);
-//                System.out.println("ölpreis:"+iomObj.getattrvalue("durchschnittlicher_oelpreis_pro_1000_liter"));
             }
+            event = reader.read();
         }
 
         writer.write(new EndBasketEvent());
