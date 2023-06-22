@@ -21,6 +21,11 @@ import ch.interlis.iox.IoxException;
 public class Csv2ParquetTest {
     private static final Configuration testConf = new Configuration();
 
+    //TODO Tests:
+    // - Datum aus CSV (im CSV-Reader gibts glaubs Logik)
+    // - App-Tests wegen Config.ini?
+    
+    
     @Test
     public void default_config_and_no_model_set_Ok() throws IoxException, IOException {
         // Prepare
@@ -68,7 +73,6 @@ public class Csv2ParquetTest {
         settings.setValue(IoxWkfConfig.SETTING_FIRSTLINE, IoxWkfConfig.SETTING_FIRSTLINE_AS_HEADER);
         settings.setValue(IoxWkfConfig.SETTING_VALUEDELIMITER, "'");            
         settings.setValue(IoxWkfConfig.SETTING_VALUESEPARATOR, ";");            
-
         
         Path csvPath = Paths.get("src/test/data/bewilligte_erdwaermeanlagen_semikolon_hochkomma.csv");
         Path outputPath = Paths.get("build/test/data/custom_config_and_no_model_set_Ok/");

@@ -1,0 +1,25 @@
+INTERLIS 2.3;
+
+MODEL SO_AFU_Bewilligte_Erdwaermeanlagen_20230616 (de)
+AT "https://agi.so.ch"
+VERSION "2023-06-16"  =
+
+  TOPIC Topic1 =
+
+    CLASS Class1 =      
+      /** Erhebungsjahr
+       */
+      jahr : MANDATORY INTERLIS.GregorianYear;
+      anfragen : MANDATORY 0 .. 100000; 
+      bewilligte_anlagen : 0 .. 100000;
+      durchschnittlicher_oelpreis_pro_1000_liter : 0 .. 10000;
+      bewilligte_erdsonden : 0 .. 100000;
+      bewilligte_erdkollektoren: 0 .. 100000;
+      sondenlaenge_km : 0.000 .. 10000.000; 
+      heizleistung_kw : 0.000 .. 10000.000;
+      internet_clicks_durchschnitt_pro_monat : 0 .. 100000;
+    END Class1;
+
+  END Topic1;
+
+END SO_AFU_Bewilligte_Erdwaermeanlagen_20230616.
