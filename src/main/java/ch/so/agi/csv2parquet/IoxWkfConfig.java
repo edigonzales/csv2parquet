@@ -6,14 +6,14 @@ public class IoxWkfConfig {
     private final static String PREFIX="ch.interlis.ioxwkf.dbtools";
     public final static String SETTING_MODELNAMES=PREFIX+".modelNames";
     public final static String SETTING_ILIDIRS=PREFIX+".settingIliDirs";
-    public final static String SETTING_ILIDIRS_DEFAULT=FILE_DIR+";http://models.interlis.ch/;";
+    public final static String SETTING_ILIDIRS_DEFAULT="https://geo.so.ch/models;http://models.interlis.ch/;";
     public final static String SETTING_FIRSTLINE=PREFIX+".firstLine";
     public final static String SETTING_FIRSTLINE_AS_HEADER="header";
     public final static String SETTING_FIRSTLINE_AS_VALUE="data";
     public final static String SETTING_VALUEDELIMITER=PREFIX+".valueDelimiter";
-    public final static char SETTING_VALUEDELIMITER_DEFAULT='\"';
+    public final static Character SETTING_VALUEDELIMITER_DEFAULT=null;
     public final static String SETTING_VALUESEPARATOR=PREFIX+".valueSeparator";
-    public final static char SETTING_VALUESEPARATOR_DEFAULT=',';
+    public final static char SETTING_VALUESEPARATOR_DEFAULT=';';
     public final static int SETTING_SRSCODE_DEFAULT=2056;
     public final static String SETTING_DATEFORMAT=PREFIX+".dateFormat";
     public final static String SETTING_TIMEFORMAT=PREFIX+".timeFormat";

@@ -6,10 +6,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.io.FilenameUtils;
+import org.interlis2.validator.Validator;
 
 import ch.ehi.basics.logging.EhiLogger;
 import ch.ehi.basics.logging.StdListener;
 import ch.ehi.basics.settings.Settings;
+import ch.interlis.ili2c.Ili2c;
+import ch.interlis.ili2c.Ili2cException;
+import ch.interlis.ili2c.config.Configuration;
+import ch.interlis.ili2c.metamodel.TransferDescription;
+import ch.interlis.ilirepository.IliManager;
 import ch.interlis.iom.IomObject;
 import ch.interlis.iom_j.csv.CsvReader;
 import ch.interlis.iox.IoxEvent;
@@ -23,7 +29,7 @@ import ch.interlis.ioxwkf.parquet.ParquetWriter;
 
 public class Csv2Parquet {
     
-    public boolean run(Path csvPath, Path outputPath, Settings config) throws IoxException {
+    public boolean run(Path csvPath, Path outputPath, Settings config) throws IoxException, Ili2cException {
       EhiLogger.getInstance().setTraceFilter(false);
         
         String csvBaseName = FilenameUtils.getBaseName(csvPath.getFileName().toString());
@@ -43,7 +49,7 @@ public class Csv2Parquet {
             reader.setValueDelimiter(valueDelimiter.charAt(0));
             EhiLogger.traceState("valueDelimiter <"+valueDelimiter+">.");
         } else {
-            reader.setValueDelimiter(IoxWkfConfig.SETTING_VALUEDELIMITER_DEFAULT);
+            // Weil default=null ist, muss nichts gesetzt werden.
             EhiLogger.traceState("valueDelimiter <"+IoxWkfConfig.SETTING_VALUEDELIMITER_DEFAULT+">.");
         }
 
@@ -54,6 +60,12 @@ public class Csv2Parquet {
         } else {
             reader.setValueSeparator(IoxWkfConfig.SETTING_VALUESEPARATOR_DEFAULT);
             EhiLogger.traceState("valueSeparator <"+IoxWkfConfig.SETTING_VALUESEPARATOR_DEFAULT+">.");
+        }
+        
+        if (config.getValue(Validator.SETTING_MODELNAMES) != null) {
+            TransferDescription td = getTransferDescriptionFromModelName(config.getValue(Validator.SETTING_MODELNAMES), csvPath.getParent());
+            reader.setModel(td);
+            writer.setModel(td);
         }
         
         String[] attrs = null;
@@ -71,18 +83,22 @@ public class Csv2Parquet {
                     // passieren, dass Attribute komplett fehlen, weil das
                     // erste Objekt analysiert wird und einige Attribute davon
                     // null sind und im IomObjekt nicht vorkommen.
-                    List<ParquetAttributeDescriptor> attrDescs = new ArrayList<>();
-                    for(String attrName : attrs) {                        
-                        ParquetAttributeDescriptor attrDesc = new ParquetAttributeDescriptor();
-                        attrDesc.setAttributeName(attrName);
-                        attrDesc.setBinding(String.class);
-                        attrDescs.add(attrDesc);
+                    // Und funktioniert nur, falls Header-Zeile vorhanden.
+                    if (firstLineIsHeader && config.getValue(Validator.SETTING_MODELNAMES) == null) {
+                        List<ParquetAttributeDescriptor> attrDescs = new ArrayList<>();
+                        for(String attrName : attrs) {                        
+                            ParquetAttributeDescriptor attrDesc = new ParquetAttributeDescriptor();
+                            attrDesc.setAttributeName(attrName);
+                            attrDesc.setBinding(String.class);
+                            attrDescs.add(attrDesc);
+                        }
+                        writer.setAttributeDescriptors(attrDescs);                        
                     }
-                    writer.setAttributeDescriptors(attrDescs);
                 }
                 
-//                ObjectEvent iomObjEvent = (ObjectEvent) event;
-//                IomObject iomObj = iomObjEvent.getIomObject();
+                ObjectEvent iomObjEvent = (ObjectEvent) event;
+                IomObject iomObj = iomObjEvent.getIomObject();
+                System.out.println(iomObj.toString());
                 
                 writer.write(event);
             }
@@ -104,4 +120,25 @@ public class Csv2Parquet {
 
         return false;
     }
+    
+    private TransferDescription getTransferDescriptionFromModelName(String iliModelName, Path additionalRepository) throws Ili2cException {
+        IliManager manager = new IliManager();        
+        String ilidirs = IoxWkfConfig.SETTING_ILIDIRS_DEFAULT + additionalRepository;
+        String repositories[] = ilidirs.split(";");
+//        for (String repo : repositories) {
+//            System.out.println(repo);            
+//        }
+        manager.setRepositories(repositories);
+        ArrayList<String> modelNames = new ArrayList<String>();
+        modelNames.add(iliModelName);
+        Configuration config = manager.getConfig(modelNames, 2.3);
+        TransferDescription td = Ili2c.runCompiler(config);
+
+        if (td == null) {
+            throw new IllegalArgumentException("INTERLIS compiler failed"); // TODO: can this be tested?
+        }
+        
+        return td;
+    }
+
 }

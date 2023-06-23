@@ -18,9 +18,11 @@ repositories {
 
 configurations.all {
     resolutionStrategy { 
+    /*
         force 'ch.interlis:ili2c-tool:5.2.8' 
         force 'ch.interlis:ili2c-core:5.2.8'
         force 'ch.interlis:ili2gpkg:4.9.0'
+    */
     }
 }
 
@@ -29,11 +31,12 @@ dependencies {
     implementation 'info.picocli:picocli-codegen:4.7.4'
     annotationProcessor 'info.picocli:picocli-codegen:4.7.4'
     
+    implementation 'ch.interlis:ilivalidator:1.13.3'
     implementation 'ch.interlis:iox-ili:1.21.18'
     //implementation('ch.interlis:iox-wkf:1.1.0') {
       //  exclude group: 'org.geotools'
     //} // Braucht es nur wegen ein paar Konstanten für CSV-Settings.
-    implementation 'io.github.sogis:iox-parquet:0.0.15'
+    implementation 'io.github.sogis:iox-parquet:0.0.16'
     implementation 'commons-io:commons-io:2.13.0'
     
     testImplementation 'org.junit.jupiter:junit-jupiter:5.9.1'
