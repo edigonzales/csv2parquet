@@ -7,7 +7,7 @@ VERSION "2023-06-16"  =
   TOPIC DateTopic =
 
     CLASS DateClass =      
-      id : TEXT
+      id : TEXT;
       aDate : INTERLIS.XMLDate;
       aDatetime : INTERLIS.XMLDateTime;
       aTime : INTERLIS.XMLTime;

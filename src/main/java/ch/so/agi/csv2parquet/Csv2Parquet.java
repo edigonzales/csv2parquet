@@ -9,7 +9,6 @@ import org.apache.commons.io.FilenameUtils;
 import org.interlis2.validator.Validator;
 
 import ch.ehi.basics.logging.EhiLogger;
-import ch.ehi.basics.logging.StdListener;
 import ch.ehi.basics.settings.Settings;
 import ch.interlis.ili2c.Ili2c;
 import ch.interlis.ili2c.Ili2cException;
@@ -23,19 +22,30 @@ import ch.interlis.iox.IoxException;
 import ch.interlis.iox_j.EndBasketEvent;
 import ch.interlis.iox_j.EndTransferEvent;
 import ch.interlis.iox_j.ObjectEvent;
-import ch.interlis.iox_j.StartTransferEvent;
 import ch.interlis.ioxwkf.parquet.ParquetAttributeDescriptor;
 import ch.interlis.ioxwkf.parquet.ParquetWriter;
 
 public class Csv2Parquet {
     
-    public boolean run(Path csvPath, Path outputPath, Settings config) throws IoxException, Ili2cException {
-      EhiLogger.getInstance().setTraceFilter(false);
+    public boolean run(Path csvPath, Path outputPath, Settings config)  {
+        //EhiLogger.getInstance().setTraceFilter(false);
         
         String csvBaseName = FilenameUtils.getBaseName(csvPath.getFileName().toString());
-        ParquetWriter writer = new ParquetWriter(Paths.get(outputPath.toString(), csvBaseName + ".parquet").toFile());
+        ParquetWriter writer = null;
+        try {
+            writer = new ParquetWriter(Paths.get(outputPath.toString(), csvBaseName + ".parquet").toFile());
+        } catch (IoxException e) {
+            EhiLogger.logError(e);
+            return true;
+        }
         
-        CsvReader reader = new CsvReader(csvPath.toFile());
+        CsvReader reader = null;
+        try {
+            reader = new CsvReader(csvPath.toFile(), config); // config notwendig, wegen encoding, das im Reader gesetzt wird.
+        } catch (IoxException e) {
+            EhiLogger.logError(e);
+            return true;
+        }
         
         boolean firstLineIsHeader = false;
         if(config.getValue(IoxWkfConfig.SETTING_FIRSTLINE) != null) {
@@ -61,63 +71,73 @@ public class Csv2Parquet {
             reader.setValueSeparator(IoxWkfConfig.SETTING_VALUESEPARATOR_DEFAULT);
             EhiLogger.traceState("valueSeparator <"+IoxWkfConfig.SETTING_VALUESEPARATOR_DEFAULT+">.");
         }
-        
+                
         if (config.getValue(Validator.SETTING_MODELNAMES) != null) {
-            TransferDescription td = getTransferDescriptionFromModelName(config.getValue(Validator.SETTING_MODELNAMES), csvPath.getParent());
+            TransferDescription td = null;
+            try {
+                td = getTransferDescriptionFromModelName(config.getValue(Validator.SETTING_MODELNAMES), csvPath.getParent());
+            } catch (Ili2cException e) {
+                EhiLogger.logError(e);
+                return true;
+            }
             reader.setModel(td);
             writer.setModel(td);
         }
         
         String[] attrs = null;
         
-        IoxEvent event = reader.read();
+        try {
+            IoxEvent event = reader.read();
 
-        while (event instanceof IoxEvent) {
-            //event = reader.read();
-            if (event instanceof ObjectEvent) {
-                if (attrs == null) {
-                    attrs = reader.getAttributes();
-                    
-                    // Funktioniert, falls die Reihenfolge garantiert ist.
-                    // Man muss die Attribute explizit setzen. Sonst kann 
-                    // passieren, dass Attribute komplett fehlen, weil das
-                    // erste Objekt analysiert wird und einige Attribute davon
-                    // null sind und im IomObjekt nicht vorkommen.
-                    // Und funktioniert nur, falls Header-Zeile vorhanden.
-                    if (firstLineIsHeader && config.getValue(Validator.SETTING_MODELNAMES) == null) {
-                        List<ParquetAttributeDescriptor> attrDescs = new ArrayList<>();
-                        for(String attrName : attrs) {                        
-                            ParquetAttributeDescriptor attrDesc = new ParquetAttributeDescriptor();
-                            attrDesc.setAttributeName(attrName);
-                            attrDesc.setBinding(String.class);
-                            attrDescs.add(attrDesc);
+            while (event instanceof IoxEvent) {
+                //event = reader.read();
+                if (event instanceof ObjectEvent) {
+                    if (attrs == null) {
+                        attrs = reader.getAttributes();
+                        
+                        // Funktioniert, falls die Reihenfolge garantiert ist.
+                        // Man muss die Attribute explizit setzen. Sonst kann 
+                        // passieren, dass Attribute komplett fehlen, weil das
+                        // erste Objekt analysiert wird und einige Attribute davon
+                        // null sind und im IomObjekt nicht vorkommen.
+                        // Und funktioniert nur, falls Header-Zeile vorhanden.
+                        if (firstLineIsHeader && config.getValue(Validator.SETTING_MODELNAMES) == null) {
+                            List<ParquetAttributeDescriptor> attrDescs = new ArrayList<>();
+                            for(String attrName : attrs) {                        
+                                ParquetAttributeDescriptor attrDesc = new ParquetAttributeDescriptor();
+                                attrDesc.setAttributeName(attrName);
+                                attrDesc.setBinding(String.class);
+                                attrDescs.add(attrDesc);
+                            }
+                            writer.setAttributeDescriptors(attrDescs);                        
                         }
-                        writer.setAttributeDescriptors(attrDescs);                        
                     }
+//                    
+//                    ObjectEvent iomObjEvent = (ObjectEvent) event;
+//                    IomObject iomObj = iomObjEvent.getIomObject();
+//                    System.out.println(iomObj.toString());
+                    
+                    writer.write(event);
                 }
-                
-                ObjectEvent iomObjEvent = (ObjectEvent) event;
-                IomObject iomObj = iomObjEvent.getIomObject();
-                System.out.println(iomObj.toString());
-                
-                writer.write(event);
+                event = reader.read();
             }
-            event = reader.read();
-        }
 
-        writer.write(new EndBasketEvent());
-        writer.write(new EndTransferEvent());
+            writer.write(new EndBasketEvent());
+            writer.write(new EndTransferEvent());
 
-        if (writer != null) {
-            writer.close();
-            writer = null;
+            if (writer != null) {
+                writer.close();
+                writer = null;
+            }
+            
+            if (reader != null) {
+                reader.close();
+                reader = null;
+            }
+        } catch (IoxException e) {
+            EhiLogger.logError(e);
+            return true;
         }
-        
-        if (reader != null) {
-            reader.close();
-            reader = null;
-        }
-
         return false;
     }
     

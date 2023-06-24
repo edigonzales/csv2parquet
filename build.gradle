@@ -13,6 +13,7 @@ compileJava {
 
 repositories {
     maven { url "https://jars.interlis.ch" }
+    maven { url "https://s01.oss.sonatype.org/service/local/repositories/releases/content/" }
     mavenCentral()
 }
 
@@ -33,10 +34,7 @@ dependencies {
     
     implementation 'ch.interlis:ilivalidator:1.13.3'
     implementation 'ch.interlis:iox-ili:1.21.18'
-    //implementation('ch.interlis:iox-wkf:1.1.0') {
-      //  exclude group: 'org.geotools'
-    //} // Braucht es nur wegen ein paar Konstanten für CSV-Settings.
-    implementation 'io.github.sogis:iox-parquet:0.0.16'
+    implementation 'io.github.sogis:iox-parquet:0.0.18'
     implementation 'commons-io:commons-io:2.13.0'
     
     testImplementation 'org.junit.jupiter:junit-jupiter:5.9.1'
@@ -54,7 +52,5 @@ tasks.named('test') {
 }
 
 run {
-    //args = ["--help"]
-    //args = ["--directory=/Users/stefan/tmp/ili2repo/models/"]
-    args = ["--trace", "--config=src/test/data/config-default.ini", "--input=src/test/data/bewilligte_erdwaermeanlagen.csv", "--output=build/"]
+    args = ["--trace", "--config=src/test/data/config.ini", "--input=src/test/data/bewilligte_erdwaermeanlagen.csv", "--output=build/"]
 }

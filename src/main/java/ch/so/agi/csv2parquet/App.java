@@ -1,11 +1,15 @@
 package ch.so.agi.csv2parquet;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.concurrent.Callable;
+
+import org.interlis2.validator.Validator;
 
 import ch.ehi.basics.logging.EhiLogger;
 import ch.ehi.basics.settings.Settings;
 import ch.interlis.iom_j.csv.CsvReader;
+import ch.interlis.iox.IoxException;
 import ch.interlis.iox_j.inifile.IniFileReader;
 import ch.interlis.iox_j.validator.ValidationConfig;
 import picocli.CommandLine;
@@ -15,7 +19,7 @@ import picocli.CommandLine.Option;
 @Command(
         name = "csv2parquet",
         description = "Convert csv files to parquet files.",
-        //version = "ili2repo version 0.0.1",
+        //version = "csv2parquet version 0.0.1",
         mixinStandardHelpOptions = true,
         
         headerHeading = "%n",
@@ -35,49 +39,46 @@ public class App implements Callable<Integer> {
     @Option(names = { "-o", "--output" }, required = false, description = "The output directory where the resulting parquet file is written to.") 
     File outputDir;
     
+    @Option(names = { "--disableValidation" }, defaultValue = "false", required = false, description = "Disable CSV validation (if model ist set).") 
+    Boolean disableValidation; 
+        
     @Option(names = { "--trace" }, required = false, description = "Enable trace logging.") 
     Boolean trace;
     
     @Override
     public Integer call() throws Exception {
         
-        EhiLogger.getInstance().setTraceFilter(!trace);
+        //EhiLogger.getInstance().setTraceFilter(!trace);
 
         // Config-File parsen und die Prosanamen der Parameter auf die technischen Namen mappen.
         // Die technischen Namen sind nicht dazu gedacht von Benutzern in eine Datei zu tippen.
         // Nachtrag: Ist im Prinzip unnötig und ich könnte eine Abürzung nehmen, da die Parameter 
         // im CsvReader nicht direkt mit Settings gesteuert werden, sondern explizit mit Setter-
-        // Methoden. 
-        Settings settings = new Settings();
-        ValidationConfig config = IniFileReader.readFile(configFile);
-        
-        String firstLineIsHeader = config.getConfigValue(CsvConfig.SETTING_SECTION_PARAMETER, CsvConfig.SETTING_FIRSTLINE_IS_HEADER);
-        settings.setValue(IoxWkfConfig.SETTING_FIRSTLINE,
-                Boolean.parseBoolean(firstLineIsHeader) ? IoxWkfConfig.SETTING_FIRSTLINE_AS_HEADER : IoxWkfConfig.SETTING_FIRSTLINE_AS_VALUE);
-        
-        String valueDelimiter = config.getConfigValue(CsvConfig.SETTING_SECTION_PARAMETER, CsvConfig.SETTING_VALUEDELIMITER);
-        if (valueDelimiter != null) {
-            settings.setValue(IoxWkfConfig.SETTING_VALUEDELIMITER, valueDelimiter.replace("\\", ""));            
-        }
-
-        String valueSeparator = config.getConfigValue(CsvConfig.SETTING_SECTION_PARAMETER, CsvConfig.SETTING_VALUESEPARATOR);
-        if (valueSeparator != null) {
-            settings.setValue(IoxWkfConfig.SETTING_VALUESEPARATOR, valueSeparator.replace("\\", ""));            
-        }
-
-        String encoding = config.getConfigValue(CsvConfig.SETTING_SECTION_PARAMETER, CsvConfig.SETTING_ENCODING);
-        if (encoding != null) {
-            settings.setValue(CsvReader.ENCODING, encoding);   
+        // Methoden.
+        Settings settings = null;
+        try {
+            settings = SettingsMapper.run(configFile);            
+        } catch (IOException e) {
+            e.printStackTrace();
+            return 1;
         }
         
-        System.out.println(settings);
-
+        if (outputDir == null) {
+            outputDir = csvFile.getParentFile();
+        }
         
-        boolean failed = false;
+        if (!disableValidation && settings.getValue(Validator.SETTING_MODELNAMES)!=null) {   
+            String[] csvFiles = { csvFile.getAbsolutePath() };
+            boolean validationOk = new CsvValidator().validate(csvFiles, settings);
+            if (!validationOk) {
+                return 2;
+            }
+        }
+        
         Csv2Parquet csv2parquet = new Csv2Parquet();
-        failed = csv2parquet.run(csvFile.toPath(), outputDir.toPath(), settings);
+        boolean failed = csv2parquet.run(csvFile.toPath(), outputDir.toPath(), settings);
 
-        return failed ? 1 : 0;
+        return failed ? 3 : 0;
     }
 
 
