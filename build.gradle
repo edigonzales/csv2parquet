@@ -13,8 +13,8 @@ compileJava {
 
 repositories {
     maven { url "https://jars.interlis.ch" }
-    maven { url "https://s01.oss.sonatype.org/service/local/repositories/releases/content/" }
     mavenCentral()
+    maven { url "https://s01.oss.sonatype.org/service/local/repositories/releases/content/" }
 }
 
 configurations.all {
