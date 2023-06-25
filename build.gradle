@@ -115,7 +115,7 @@ jreleaser {
             distributionType = 'JAVA_BINARY'
             stereotype = 'CLI'
             artifact {
-                path = "build/distributions/csv2parquet-0.0."+version+".zip"
+                path = "build/distributions/csv2parquet-"+version+".zip"
             }
         }
     }
