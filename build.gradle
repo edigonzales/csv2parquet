@@ -1,14 +1,16 @@
 plugins {
     id 'application'
+    id 'org.graalvm.buildtools.native' version '0.9.23'
+    id 'org.jreleaser' version '1.2.0'
 }
 
 apply from: "$rootDir/gradle/versioning.gradle"
 
-sourceCompatibility = '17'
-targetCompatibility = '17'
+sourceCompatibility = '8'
+targetCompatibility = '8'
 
 compileJava {
-    options.compilerArgs.addAll(['--release', '17'])
+    options.compilerArgs.addAll(['--release', '8'])
 }
 
 repositories {
@@ -34,7 +36,7 @@ dependencies {
     
     implementation 'ch.interlis:ilivalidator:1.13.3'
     implementation 'ch.interlis:iox-ili:1.21.18'
-    implementation 'io.github.sogis:iox-parquet:0.0.18'
+    implementation 'io.github.sogis:iox-parquet:0.0.20'
     implementation 'commons-io:commons-io:2.13.0'
     
     testImplementation 'org.junit.jupiter:junit-jupiter:5.9.1'
@@ -52,5 +54,69 @@ tasks.named('test') {
 }
 
 run {
-    args = ["--trace", "--config=src/test/data/config.ini", "--input=src/test/data/bewilligte_erdwaermeanlagen.csv", "--output=build/"]
+    //args = ["--trace", "--config=src/test/data/config.ini", "--input=src/test/data/bewilligte_erdwaermeanlagen.csv", "--output=build/"]
+    //args = ["--trace", "--input=src/test/data/bewilligte_erdwaermeanlagen_excel_export.csv", "--output=build/"]
+    args = ["--trace", "--config=src/test/data/config_erdwaermeanlagen.ini", "--input=src/test/data/bewilligte_erdwaermeanlagen_excel_export.csv", "--output=build/"]
+    //jvmArgs = ["-agentlib:native-image-agent=config-output-dir=src/main/resources/META-INF/native-image/"]
+}
+
+graalvmNative {
+    binaries {
+        main {
+            imageName = 'csv2parquet'
+            mainClass = 'ch.so.agi.csv2parquet.App' 
+            debug = false 
+            verbose = true 
+            fallback = false 
+            configurationFileDirectories.from(file('src/main/resources/META-INF/native-image/')) 
+
+            buildArgs.add('--enable-url-protocols=http,https') 
+            
+            /*
+            agent {
+                enabled = true 
+            }
+            */
+            
+        }
+        test {
+            verbose = true
+            fallback = false 
+            //buildArgs.add('--enable-url-protocols=http,https') 
+        }
+    }
+}
+
+jreleaser {
+    gitRootSearch = true
+    
+    project {
+        name = "csv2parquet"
+        description = 'CSV to Parquet converter'
+        website = 'https://agi.so.ch'
+        authors = ['edigonzales']
+        license = 'MIT'
+        docsUrl = 'https://github.com/edigonzales/csv2parquet'
+        copyright = '2023 Stefan Ziegler'
+        java {
+            groupId = 'ch.so.agi.csv2parquet'
+        }
+
+    }
+    release {
+        github {
+            repoOwner = 'edigonzales'
+            overwrite = true
+            apiEndpoint = 'https://api.github.com'
+        }
+    }
+    distributions {
+        appJvm {
+            distributionType = 'JAVA_BINARY'
+            stereotype = 'CLI'
+            artifact {
+                path = "build/distributions/csv2parquet-0.0."+version+".zip"
+            }
+        }
+    }
 }

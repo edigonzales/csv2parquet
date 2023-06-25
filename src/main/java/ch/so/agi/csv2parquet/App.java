@@ -42,25 +42,27 @@ public class App implements Callable<Integer> {
     @Option(names = { "--disableValidation" }, defaultValue = "false", required = false, description = "Disable CSV validation (if model ist set).") 
     Boolean disableValidation; 
         
-    @Option(names = { "--trace" }, required = false, description = "Enable trace logging.") 
+    @Option(names = { "--trace" }, defaultValue = "false", required = false, description = "Enable trace logging.") 
     Boolean trace;
     
     @Override
     public Integer call() throws Exception {
         
-        //EhiLogger.getInstance().setTraceFilter(!trace);
+        EhiLogger.getInstance().setTraceFilter(!trace);
 
         // Config-File parsen und die Prosanamen der Parameter auf die technischen Namen mappen.
         // Die technischen Namen sind nicht dazu gedacht von Benutzern in eine Datei zu tippen.
         // Nachtrag: Ist im Prinzip unnötig und ich könnte eine Abürzung nehmen, da die Parameter 
         // im CsvReader nicht direkt mit Settings gesteuert werden, sondern explizit mit Setter-
         // Methoden.
-        Settings settings = null;
-        try {
-            settings = SettingsMapper.run(configFile);            
-        } catch (IOException e) {
-            e.printStackTrace();
-            return 1;
+        Settings settings = new Settings();
+        if (configFile != null) {
+            try {
+                settings = SettingsMapper.run(configFile);            
+            } catch (IOException e) {
+                e.printStackTrace();
+                return 1;
+            }            
         }
         
         if (outputDir == null) {

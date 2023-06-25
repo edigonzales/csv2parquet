@@ -47,7 +47,7 @@ public class Csv2Parquet {
             return true;
         }
         
-        boolean firstLineIsHeader = false;
+        boolean firstLineIsHeader = true;
         if(config.getValue(IoxWkfConfig.SETTING_FIRSTLINE) != null) {
             firstLineIsHeader=config.getValue(IoxWkfConfig.SETTING_FIRSTLINE).equals(IoxWkfConfig.SETTING_FIRSTLINE_AS_HEADER);
         } 

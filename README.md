@@ -1,5 +1,7 @@
 # csv2parquet
 
+- immer mit oder ohne, d.h. jedes attribut gleich 
+- default values
 - timestamp und time
 - timestamp könnte konfigurierbar gemacht werden
 - encoding

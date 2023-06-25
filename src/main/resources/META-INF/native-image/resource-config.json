@@ -1,0 +1,68 @@
+{
+  "resources":{
+  "includes":[{
+    "pattern":"\\QMETA-INF/services/javax.xml.stream.XMLEventFactory\\E"
+  }, {
+    "pattern":"\\QMETA-INF/services/javax.xml.stream.XMLInputFactory\\E"
+  }, {
+    "pattern":"\\QMETA-INF/services/javax.xml.stream.XMLOutputFactory\\E"
+  }, {
+    "pattern":"\\QMETA-INF/services/org.apache.hadoop.fs.FileSystem\\E"
+  }, {
+    "pattern":"\\Qcore-default.xml\\E"
+  }, {
+    "pattern":"\\Qmapred-default.xml\\E"
+  }, {
+    "pattern":"\\Qorg/apache/hadoop/fs/HarFileSystem.class\\E"
+  }, {
+    "pattern":"\\Qorg/apache/hadoop/fs/LocalFileSystem.class\\E"
+  }, {
+    "pattern":"\\Qorg/apache/hadoop/fs/http/HttpFileSystem.class\\E"
+  }, {
+    "pattern":"\\Qorg/apache/hadoop/fs/http/HttpsFileSystem.class\\E"
+  }, {
+    "pattern":"\\Qorg/apache/hadoop/fs/viewfs/ViewFileSystem.class\\E"
+  }, {
+    "pattern":"\\Qorg/apache/hadoop/hdfs/DistributedFileSystem.class\\E"
+  }, {
+    "pattern":"\\Qorg/apache/hadoop/hdfs/web/SWebHdfsFileSystem.class\\E"
+  }, {
+    "pattern":"\\Qorg/apache/hadoop/hdfs/web/WebHdfsFileSystem.class\\E"
+  }, {
+    "pattern":"\\Qorg/slf4j/impl/StaticLoggerBinder.class\\E"
+  }, {
+    "pattern":"\\Qorg/xerial/snappy/VERSION\\E"
+  }, {
+    "pattern":"\\Qorg/xerial/snappy/native/Mac/aarch64/libsnappyjava.dylib\\E"
+  }, {
+    "pattern":"\\Qyarn-default.xml\\E"
+  }]},
+  "bundles":[{
+    "name":"ch.ehi.basics.view.resources.GenericFileFilter",
+    "locales":[""]
+  }, {
+    "name":"ch.interlis.ili2c.Version",
+    "locales":[""]
+  }, {
+    "name":"ch.interlis.ili2c.generator.Interlis1Generator",
+    "locales":[""]
+  }, {
+    "name":"ch.interlis.ili2c.metamodel.ErrorMessages",
+    "locales":[""]
+  }, {
+    "name":"ch.interlis.iox_j.Version",
+    "locales":[""]
+  }, {
+    "name":"ch.interlis.iox_j.validator.ValidatorMessages",
+    "locales":[""]
+  }, {
+    "name":"org.interlis2.validator.Version",
+    "locales":[""]
+  }, {
+    "name":"sun.security.util.AuthResources",
+    "classNames":["sun.security.util.AuthResources"]
+  }, {
+    "name":"sun.security.util.Resources",
+    "classNames":["sun.security.util.Resources"]
+  }]
+}

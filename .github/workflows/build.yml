@@ -1,0 +1,43 @@
+name: csv2parquet CI
+
+on: 
+  push:
+    paths-ignore:
+      - '**.md'
+  workflow_dispatch:
+
+jobs:
+  build-jvm:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+      packages: write
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up JDK 8
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin' 
+          java-version: '8'
+          cache: 'gradle'
+          
+      - name: Build app with Gradle
+        id: buildJvm
+        run: ./gradlew clean build distZip
+
+      - uses: actions/upload-artifact@v2
+        if: ${{ failure() }}
+        with:
+          name: reports
+          path: build/reports/tests/
+
+      - name: Release distribution
+        run: |
+          ./gradlew -i jreleaserRelease
+        env:
+          JRELEASER_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        if: ${{ always() && (steps.buildJvm.outcome == 'success') && github.ref == 'refs/heads/main'}}
+
