@@ -56,7 +56,8 @@ tasks.named('test') {
 run {
     //args = ["--trace", "--config=src/test/data/config.ini", "--input=src/test/data/bewilligte_erdwaermeanlagen.csv", "--output=build/"]
     //args = ["--trace", "--input=src/test/data/bewilligte_erdwaermeanlagen_excel_export.csv", "--output=build/"]
-    args = ["--trace", "--config=src/test/data/config_erdwaermeanlagen.ini", "--input=src/test/data/bewilligte_erdwaermeanlagen_excel_export.csv", "--output=build/"]
+    //args = ["--trace", "--config=src/test/data/config_erdwaermeanlagen.ini", "--input=src/test/data/bewilligte_erdwaermeanlagen_excel_export.csv", "--output=build/"]
+    args = ["--trace", "--config=ilidata:ch.so.afu.erdwaermeanlagen44.ini", "--input=src/test/data/bewilligte_erdwaermeanlagen_excel_export.csv", "--output=build/"]
     //jvmArgs = ["-agentlib:native-image-agent=config-output-dir=src/main/resources/META-INF/native-image/"]
 }
 

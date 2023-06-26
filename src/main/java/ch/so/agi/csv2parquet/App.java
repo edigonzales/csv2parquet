@@ -31,7 +31,7 @@ import picocli.CommandLine.Option;
 public class App implements Callable<Integer> {
     
     @Option(names = { "-c", "--config" }, required = false, description = "The configuration file.")
-    File configFile;
+    String configFileName;
     
     @Option(names = { "-i", "--input" }, required = true, description = "The input csv file.") 
     File csvFile;
@@ -49,6 +49,19 @@ public class App implements Callable<Integer> {
     public Integer call() throws Exception {
         
         EhiLogger.getInstance().setTraceFilter(!trace);
+        
+        // TODO
+        // Fake it, till you make it.
+        // Zukünftig soll ilidata aus einem INTERLIS-Repo geladen werden.
+        File configFile;
+        if (configFileName.startsWith("ilidata")) {
+            configFile = Utils.copyResourceToTmpDir(configFileName.split(":")[1]);
+            if (configFile != null) {
+                EhiLogger.traceState("config file <"+configFile.getAbsolutePath()+">.");                
+            }            
+        } else {
+            configFile = new File(configFileName);
+        }
 
         // Config-File parsen und die Prosanamen der Parameter auf die technischen Namen mappen.
         // Die technischen Namen sind nicht dazu gedacht von Benutzern in eine Datei zu tippen.
