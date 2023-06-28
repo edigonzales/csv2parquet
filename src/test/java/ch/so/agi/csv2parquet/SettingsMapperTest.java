@@ -15,18 +15,47 @@ import ch.interlis.iom_j.csv.CsvReader;
 public class SettingsMapperTest {
 
     @Test
-    public void settingsMapper_Ok() throws IOException {
+    public void settingsMapper_single_resource_no_id_set_Ok() throws Exception {
         // Prepare
-        Path configPath = Paths.get("src/test/data/config.ini");
+        Path configPath = Paths.get("src/test/data/bewilligte_erdwaermeanlagen/ch.so.afu.bewilligte_erdwaermeanlagen.toml");
         
         // Run
-        Settings settings = SettingsMapper.run(configPath.toFile());
+        Settings settings = SettingsMapper.run(configPath.toFile(), null);
 
         // Validate
         assertEquals("header", settings.getValue(IoxWkfConfig.SETTING_FIRSTLINE));
         assertEquals(";", settings.getValue(IoxWkfConfig.SETTING_VALUESEPARATOR));
-        assertEquals("\"", settings.getValue(IoxWkfConfig.SETTING_VALUEDELIMITER));
-        assertEquals("ISO-8859-1", settings.getValue(CsvReader.ENCODING));
-        assertEquals("SO_HBA_Gebaeude_20230111", settings.getValue(Validator.SETTING_MODELNAMES));
+        assertEquals("UTF-8", settings.getValue(CsvReader.ENCODING));
+        assertEquals("SO_AFU_Bewilligte_Erdwaermeanlagen_20230616", settings.getValue(Validator.SETTING_MODELNAMES));
     }
+    
+    @Test
+    public void settingsMapper_single_resource_id_set_Ok() throws Exception {
+        // Prepare
+        Path configPath = Paths.get("src/test/data/bewilligte_erdwaermeanlagen/ch.so.afu.bewilligte_erdwaermeanlagen.toml");
+        
+        // Run
+        Settings settings = SettingsMapper.run(configPath.toFile(), "ch.so.afu.bewilligte_erdwaermeanlagen");
+
+        // Validate
+        assertEquals("header", settings.getValue(IoxWkfConfig.SETTING_FIRSTLINE));
+        assertEquals(";", settings.getValue(IoxWkfConfig.SETTING_VALUESEPARATOR));
+        assertEquals("UTF-8", settings.getValue(CsvReader.ENCODING));
+        assertEquals("SO_AFU_Bewilligte_Erdwaermeanlagen_20230616", settings.getValue(Validator.SETTING_MODELNAMES));
+    }
+    
+    @Test
+    public void settingsMapper_multiple_resources_id_set_Ok() throws Exception {
+        // Prepare
+        Path configPath = Paths.get("src/test/data/amtliche_vermessung_statistik/ch.so.agi.amtliche_vermessung.statistik.toml");
+        
+        // Run
+        Settings settings = SettingsMapper.run(configPath.toFile(), "ch.so.agi.amtliche_vermessung.statistik.umsatz");
+
+        // Validate
+        assertEquals("header", settings.getValue(IoxWkfConfig.SETTING_FIRSTLINE));
+        assertEquals(null, settings.getValue(IoxWkfConfig.SETTING_VALUESEPARATOR));
+        assertEquals("SO_AGI_Amtliche_Vermessung_Statistik_Umsatz_20230625", settings.getValue(Validator.SETTING_MODELNAMES));
+    }
+
 }

@@ -61,9 +61,9 @@ run {
     //args = ["--trace", "--config=ilidata:ch.so.afu.erdwaermeanlagen44.ini", "--input=src/test/data/bewilligte_erdwaermeanlagen_excel_export.csv", "--output=build/"]
     //jvmArgs = ["-agentlib:native-image-agent=config-output-dir=src/main/resources/META-INF/native-image/"]
     
-    //args = ["--trace", "--config=src/test/data/amtliche_vermessung_statistik/ch.so.agi.amtliche_vermessung.statistik.toml", "--id=ch.so.agi.amtliche_vermessung.statistik.umsatz", "--input=src/test/data/amtliche_vermessung_statistik/amtliche_vermessung_umsatz.csv", "--output=build/"]
+    args = ["--trace", "--config=src/test/data/amtliche_vermessung_statistik/ch.so.agi.amtliche_vermessung.statistik.toml", "--id=ch.so.agi.amtliche_vermessung.statistik.umsatz", "--input=src/test/data/amtliche_vermessung_statistik/amtliche_vermessung_umsatz.csv", "--output=build/"]
     //args = ["--trace", "--config=src/test/data/bewilligte_erdwaermeanlagen/ch.so.afu.bewilligte_erdwaermeanlagen.toml", "--id=ch.so.afu.bewilligte_erdwaermeanlagen", "--input=src/test/data/bewilligte_erdwaermeanlagen/bewilligte_erdwaermeanlagen.csv", "--output=build/"]
-    args = ["--trace", "--config=src/test/data/bewilligte_erdwaermeanlagen/ch.so.afu.bewilligte_erdwaermeanlagen.toml", "--input=src/test/data/bewilligte_erdwaermeanlagen/bewilligte_erdwaermeanlagen.csv", "--output=build/"]
+    //args = ["--trace", "--config=src/test/data/bewilligte_erdwaermeanlagen/ch.so.afu.bewilligte_erdwaermeanlagen.toml", "--input=src/test/data/bewilligte_erdwaermeanlagen/bewilligte_erdwaermeanlagen.csv", "--output=build/"]
 }
 
 graalvmNative {

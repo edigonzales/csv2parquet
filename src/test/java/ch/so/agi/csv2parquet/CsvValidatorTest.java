@@ -21,7 +21,7 @@ public class CsvValidatorTest {
         settings.setValue(IoxWkfConfig.SETTING_VALUEDELIMITER, null);
         settings.setValue(Validator.SETTING_MODELNAMES, "SO_AFU_Bewilligte_Erdwaermeanlagen_20230616");
 
-        Path csvPath = Paths.get("src/test/data/bewilligte_erdwaermeanlagen_excel_export.csv");
+        Path csvPath = Paths.get("src/test/data/bewilligte_erdwaermeanlagen/bewilligte_erdwaermeanlagen.csv");
         
         // Run
         String[] csvFiles = { csvPath.toFile().getAbsolutePath() };
@@ -39,7 +39,7 @@ public class CsvValidatorTest {
         settings.setValue(IoxWkfConfig.SETTING_VALUEDELIMITER, null);
         settings.setValue(Validator.SETTING_MODELNAMES, "SO_AFU_Bewilligte_Erdwaermeanlagen_20230616");
 
-        Path csvPath = Paths.get("src/test/data/bewilligte_erdwaermeanlagen_validation_error.csv");
+        Path csvPath = Paths.get("src/test/data/bewilligte_erdwaermeanlagen/bewilligte_erdwaermeanlagen_validation_error.csv");
         
         // Run
         String[] csvFiles = { csvPath.toFile().getAbsolutePath() };

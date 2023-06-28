@@ -12,7 +12,6 @@ import picocli.CommandLine;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -32,7 +31,7 @@ class AppTest {
         cmd.setOut(new PrintWriter(sw));
 
         // Run
-        int exitCode = cmd.execute("--config=src/test/data/config_erdwaermeanlagen.ini", "--input=src/test/data/bewilligte_erdwaermeanlagen_validation_error.csv");
+        int exitCode = cmd.execute("--config=src/test/data/bewilligte_erdwaermeanlagen/ch.so.afu.bewilligte_erdwaermeanlagen.toml", "--input=src/test/data/bewilligte_erdwaermeanlagen/bewilligte_erdwaermeanlagen_validation_error.csv");
 
         // Validate
         assertEquals(2, exitCode);
@@ -41,8 +40,8 @@ class AppTest {
     @Test 
     public void convert_model_set_Ok() throws IOException {
         // Prepare
-        String csvBaseName = "bewilligte_erdwaermeanlagen_excel_export";
-        Path csvPath = Paths.get("src/test/data/", csvBaseName + ".csv");
+        String csvBaseName = "bewilligte_erdwaermeanlagen";
+        Path csvPath = Paths.get("src/test/data/bewilligte_erdwaermeanlagen/", csvBaseName + ".csv");
         Path outputPath = Paths.get("build/test/data/app_convert_Ok/");
         outputPath.toFile().mkdirs();
         
@@ -53,7 +52,7 @@ class AppTest {
         cmd.setOut(new PrintWriter(sw));
 
         // Run
-        int exitCode = cmd.execute("--config=src/test/data/config_erdwaermeanlagen.ini",
+        int exitCode = cmd.execute("--config=src/test/data/bewilligte_erdwaermeanlagen/ch.so.afu.bewilligte_erdwaermeanlagen.toml",
                 "--input="+csvPath.toString(),
                 "--output="+outputPath.toString());
         

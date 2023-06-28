@@ -29,9 +29,6 @@ import ch.interlis.iom_j.csv.CsvReader;
 public class Csv2ParquetTest {
     private static final Configuration testConf = new Configuration();
 
-    //TODO Tests:
-    // - App-Tests wegen Config.ini?
-
     @Test
     public void encoding_iso_8859_1_Ok() throws Exception {
         // Prepare
@@ -40,7 +37,7 @@ public class Csv2ParquetTest {
         settings.setValue(CsvReader.ENCODING, "ISO-8859-1");
         settings.setValue(Validator.SETTING_MODELNAMES, "SO_HBA_Gebaeude_20230111");
 
-        Path csvPath = Paths.get("src/test/data/20230124_sap_Gebaeude.csv");
+        Path csvPath = Paths.get("src/test/data/kantonale_gebaeude/20230124_sap_Gebaeude.csv");
         Path outputPath = Paths.get("build/test/data/encoding_iso_8859_1_Ok/");
         outputPath.toFile().mkdirs();
         
@@ -64,7 +61,7 @@ public class Csv2ParquetTest {
         settings.setValue(IoxWkfConfig.SETTING_FIRSTLINE, IoxWkfConfig.SETTING_FIRSTLINE_AS_HEADER);
         settings.setValue(Validator.SETTING_MODELNAMES, "Date_202306016");
 
-        Path csvPath = Paths.get("src/test/data/date_datatypes.csv");
+        Path csvPath = Paths.get("src/test/data/data_datatypes/date_datatypes.csv");
         Path outputPath = Paths.get("build/test/data/date_datatypes_handling_Ok/");
         outputPath.toFile().mkdirs();
         
@@ -107,7 +104,7 @@ public class Csv2ParquetTest {
         settings.setValue(IoxWkfConfig.SETTING_FIRSTLINE, IoxWkfConfig.SETTING_FIRSTLINE_AS_HEADER);
         settings.setValue(Validator.SETTING_MODELNAMES, "SO_AFU_Bewilligte_Erdwaermeanlagen_20230616");
         
-        Path csvPath = Paths.get("src/test/data/bewilligte_erdwaermeanlagen_excel_export.csv");
+        Path csvPath = Paths.get("src/test/data/bewilligte_erdwaermeanlagen/bewilligte_erdwaermeanlagen_excel_export.csv");
         Path outputPath = Paths.get("build/test/data/default_config_and_model_set_Ok/");
         outputPath.toFile().mkdirs();
         
@@ -148,7 +145,7 @@ public class Csv2ParquetTest {
         Settings settings = new Settings();
         settings.setValue(IoxWkfConfig.SETTING_FIRSTLINE, IoxWkfConfig.SETTING_FIRSTLINE_AS_HEADER);
         
-        Path csvPath = Paths.get("src/test/data/bewilligte_erdwaermeanlagen_excel_export.csv");
+        Path csvPath = Paths.get("src/test/data/bewilligte_erdwaermeanlagen/bewilligte_erdwaermeanlagen_excel_export.csv");
         Path outputPath = Paths.get("build/test/data/default_config_and_no_model_set_Ok/");
         outputPath.toFile().mkdirs();
         
@@ -190,7 +187,7 @@ public class Csv2ParquetTest {
         settings.setValue(IoxWkfConfig.SETTING_VALUEDELIMITER, "'");            
         settings.setValue(IoxWkfConfig.SETTING_VALUESEPARATOR, ";");            
         
-        Path csvPath = Paths.get("src/test/data/bewilligte_erdwaermeanlagen_semikolon_hochkomma.csv");
+        Path csvPath = Paths.get("src/test/data/bewilligte_erdwaermeanlagen/bewilligte_erdwaermeanlagen_semikolon_hochkomma.csv");
         Path outputPath = Paths.get("build/test/data/custom_config_and_no_model_set_Ok/");
         outputPath.toFile().mkdirs();
         
