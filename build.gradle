@@ -38,6 +38,7 @@ dependencies {
     implementation 'ch.interlis:iox-ili:1.21.18'
     implementation 'io.github.sogis:iox-parquet:0.0.20'
     implementation 'commons-io:commons-io:2.13.0'
+    implementation 'org.tomlj:tomlj:1.1.0'
     
     testImplementation 'org.junit.jupiter:junit-jupiter:5.9.1'
     testImplementation 'org.apache.hadoop:hadoop-client:3.3.5'
@@ -59,6 +60,10 @@ run {
     //args = ["--trace", "--config=src/test/data/config_erdwaermeanlagen.ini", "--input=src/test/data/bewilligte_erdwaermeanlagen_excel_export.csv", "--output=build/"]
     //args = ["--trace", "--config=ilidata:ch.so.afu.erdwaermeanlagen44.ini", "--input=src/test/data/bewilligte_erdwaermeanlagen_excel_export.csv", "--output=build/"]
     //jvmArgs = ["-agentlib:native-image-agent=config-output-dir=src/main/resources/META-INF/native-image/"]
+    
+    //args = ["--trace", "--config=src/test/data/amtliche_vermessung_statistik/ch.so.agi.amtliche_vermessung.statistik.toml", "--id=ch.so.agi.amtliche_vermessung.statistik.umsatz", "--input=src/test/data/amtliche_vermessung_statistik/amtliche_vermessung_umsatz.csv", "--output=build/"]
+    //args = ["--trace", "--config=src/test/data/bewilligte_erdwaermeanlagen/ch.so.afu.bewilligte_erdwaermeanlagen.toml", "--id=ch.so.afu.bewilligte_erdwaermeanlagen", "--input=src/test/data/bewilligte_erdwaermeanlagen/bewilligte_erdwaermeanlagen.csv", "--output=build/"]
+    args = ["--trace", "--config=src/test/data/bewilligte_erdwaermeanlagen/ch.so.afu.bewilligte_erdwaermeanlagen.toml", "--input=src/test/data/bewilligte_erdwaermeanlagen/bewilligte_erdwaermeanlagen.csv", "--output=build/"]
 }
 
 graalvmNative {

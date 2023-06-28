@@ -32,7 +32,10 @@ public class App implements Callable<Integer> {
     
     @Option(names = { "-c", "--config" }, required = false, description = "The configuration file.")
     String configFileName;
-    
+
+    @Option(names = { "--id" }, required = false, description = "The identifier of the dataset or sub dataset")
+    String identifier;
+
     @Option(names = { "-i", "--input" }, required = true, description = "The input csv file.") 
     File csvFile;
     
@@ -71,7 +74,8 @@ public class App implements Callable<Integer> {
         Settings settings = new Settings();
         if (configFile != null) {
             try {
-                settings = SettingsMapper.run(configFile);            
+                // TODO Handling, falls nicht vorhanden.
+                settings = SettingsMapper.run(configFile, identifier);            
             } catch (IOException e) {
                 e.printStackTrace();
                 return 1;

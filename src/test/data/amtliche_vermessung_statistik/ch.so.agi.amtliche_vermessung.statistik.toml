@@ -3,8 +3,10 @@ title="Ich bin ein Titel"
 description="Ich bin eine Beschreibung"
 
 [ch.so.agi.amtliche_vermessung.statistik.umsatz]
+title="Ressourcen-Title... Umsatz"
+description="Ressourcen Beschreibung"
 firstLineIsHeader=true
-models=SO_AGI_Amtliche_Vermessung_Personal_Umsatz_20230625
+models="SO_AGI_Amtliche_Vermessung_Personal_Umsatz_20230625"
 
 # man müsste config file UND id mitliefern im CLI
 # Im Betrieb nur noch nur id? Jein, ausser man kommt robust von der ID auf den Filenamen resp ID des toml files im Repo. Entweder ist das identisch (wenn es nur eine Tabelle gibt) oder man muss nach dem Parent suchen. Könnte schon Teil der Suchstrategie sein: wenn er die ID (welcher der Benutzer für das CSV angibt) findet, ist es eine 1:1-Beziehung, wenn er nix findet, muss er nach dem Parent suchen.
