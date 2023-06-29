@@ -9,5 +9,6 @@
 - models
 - validator (nur mit model)
 - config: empty char?
+- constraints?
 
 - more app-tests

@@ -1,0 +1,16 @@
+[ch.so.agi.amtliche_vermessung_statistik]
+title="Ich bin ein Titel"
+description="Ich bin eine Beschreibung"
+
+[ch.so.agi.amtliche_vermessung_statistik.umsatz]
+title="Ressourcen-Title... Umsatz"
+description="Ressourcen Beschreibung"
+firstLineIsHeader=true
+models="SO_AGI_Amtliche_Vermessung_Statistik_Umsatz_20230625"
+
+
+[ch.so.agi.amtliche_vermessung_statistik.personal]
+title="Ressourcen-Title... Personal"
+description="Ressourcen Beschreibung Personal"
+firstLineIsHeader=true
+models="SO_AGI_Amtliche_Vermessung_Statistik_Personal_20230625"

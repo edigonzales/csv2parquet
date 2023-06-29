@@ -1,0 +1,4 @@
+[ch.so.afu.abfallmengen_gemeinden]
+firstLineIsHeader=true
+valueSeparator=";"
+models="SO_AFU_Abfallmengen_Gemeinden_20230629"

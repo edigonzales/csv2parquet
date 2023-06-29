@@ -1,0 +1,23 @@
+INTERLIS 2.3;
+
+MODEL SO_AFU_Abfallmengen_Gemeinden_20230629 (de)
+AT "https://afu.so.ch"
+VERSION "2023-06-29"  =
+
+  TOPIC Abfallmengen_Gemeinden =
+
+    CLASS Abfallmengen_Gemeinden =      
+      /** Erhebungsjahr
+       */
+      jahr : MANDATORY INTERLIS.GregorianYear;
+      /** Name der politischen Gemeinde
+       */      
+      gemeinde : MANDATORY TEXT*100;
+      /** Steuerfuss in Prozent. Fehlende Werte aufgrund Gemeindefusionen, da momentan nur aktuelle Gemeinden vorliegend.
+       */      
+      steuerfuss_in_prozent : 0 .. 200;
+    END Abfallmengen_Gemeinden;
+
+  END Abfallmengen_Gemeinden;
+
+END SO_AFU_Abfallmengen_Gemeinden_20230629.
