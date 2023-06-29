@@ -1,12 +1,12 @@
 INTERLIS 2.3;
 
-MODEL SO_AFU_Abfallmengen_Gemeinden_20230629 (de)
-AT "https://afu.so.ch"
+MODEL SO_AGEM_Steuerfuesse_NP_20230629 (de)
+AT "https://agem.so.ch"
 VERSION "2023-06-29"  =
 
-  TOPIC Abfallmengen_Gemeinden =
+  TOPIC Steuerfuesse =
 
-    CLASS Abfallmengen_Gemeinden =      
+    CLASS Steuerfuss_Natuerliche_Personen =      
       /** Erhebungsjahr
        */
       jahr : MANDATORY INTERLIS.GregorianYear;
@@ -16,8 +16,8 @@ VERSION "2023-06-29"  =
       /** Steuerfuss in Prozent. Fehlende Werte aufgrund Gemeindefusionen, da momentan nur aktuelle Gemeinden vorliegend.
        */      
       steuerfuss_in_prozent : 0 .. 200;
-    END Abfallmengen_Gemeinden;
+    END Steuerfuss_Natuerliche_Personen;
 
-  END Abfallmengen_Gemeinden;
+  END Steuerfuesse;
 
-END SO_AFU_Abfallmengen_Gemeinden_20230629.
+END SO_AGEM_Steuerfuesse_NP_20230629.

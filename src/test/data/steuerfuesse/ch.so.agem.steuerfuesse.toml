@@ -1,0 +1,8 @@
+[ch.so.agem.steuerfuesse]
+title="Ich bin ein Titel"
+description="Ich bin eine Beschreibung"
+
+[ch.so.agem.steuerfuesse.natuerliche_personen]
+firstLineIsHeader=true
+valueSeparator=";"
+models="SO_AGEM_Steuerfuesse_NP_20230629"

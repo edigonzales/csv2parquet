@@ -9,6 +9,6 @@
 - models
 - validator (nur mit model)
 - config: empty char?
-- constraints?
+- constraints? siehe abfall, inkl. Fehlermeldung
 
 - more app-tests
