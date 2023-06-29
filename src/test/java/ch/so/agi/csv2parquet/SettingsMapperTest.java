@@ -47,10 +47,10 @@ public class SettingsMapperTest {
     @Test
     public void settingsMapper_multiple_resources_id_set_Ok() throws Exception {
         // Prepare
-        Path configPath = Paths.get("src/test/data/amtliche_vermessung_statistik/ch.so.agi.amtliche_vermessung.statistik.toml");
+        Path configPath = Paths.get("src/test/data/amtliche_vermessung_statistik/ch.so.agi.amtliche_vermessung_statistik.toml");
         
         // Run
-        Settings settings = SettingsMapper.run(configPath.toFile(), "ch.so.agi.amtliche_vermessung.statistik.umsatz");
+        Settings settings = SettingsMapper.run(configPath.toFile(), "ch.so.agi.amtliche_vermessung_statistik.umsatz");
 
         // Validate
         assertEquals("header", settings.getValue(IoxWkfConfig.SETTING_FIRSTLINE));
