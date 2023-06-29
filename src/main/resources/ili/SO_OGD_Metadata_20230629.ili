@@ -1,0 +1,105 @@
+INTERLIS 2.3;
+
+/** !!------------------------------------------------------------------------------
+ *  !! Version    | wer | Änderung
+ *  !!------------------------------------------------------------------------------
+ *  !! 2023-06-29 | sz  | Ersterfassung
+ *  !!==============================================================================
+ */
+!!@ technicalContact=mailto:agi@bd.so.ch
+!!@ furtherInformation=http://geo.so.ch/models/AGI/SO_AGI_Metadata_20230304.uml
+
+MODEL SO_OGD_Metadata_20230629 (de)
+AT "https://agi.so.ch"
+VERSION "2023-06-09" =
+  DOMAIN
+
+    SOOID = OID TEXT*255;
+
+  STRUCTURE ModelLink =
+    name : MANDATORY TEXT;  !! Name or Namespace
+    locationHint : URI; !! repo
+    versionHint : TEXT;
+  END ModelLink;
+
+  STRUCTURE Office_ =
+    agencyName : TEXT;
+    abbreviation : TEXT;
+    division : TEXT;
+    officeAtWeb : URI;
+    email : URI;
+    phone : TEXT;
+  END Office_;
+
+  STRUCTURE FileFormat = 
+    name: MANDATORY TEXT;
+    abbreviation: MANDATORY TEXT;
+    mimeType: MANDATORY TEXT;
+    extension: MANDATORY TEXT;
+  END FileFormat;
+
+  STRUCTURE AttributeDescription = 
+    name : TEXT; !! so wie er im Modell steht
+    description : MTEXT;
+    dataType : TEXT;
+    isMandatory : BOOLEAN;
+  END AttributeDescription;
+
+  STRUCTURE ClassDescription = 
+    name : TEXT; !! entspricht originalem Klassennamen.
+    title : TEXT; !! mittels ilidoc
+    description : MTEXT;
+    attributeDescription : BAG {0..*} OF SO_OGD_Metadata_20230629.AttributeDescription;
+  END ClassDescription;
+
+  STRUCTURE Resource = 
+    identifier : MANDATORY TEXT;
+    title : MANDATORY TEXT;
+    description : TEXT;
+    model : SO_OGD_Metadata_20230629.ModelLink;
+    configId : TEXT; !! in ilidata.xml
+    lastPublishingDate : MANDATORY FORMAT INTERLIS.XMLDate "1990-1-1" .. "2100-12-31";
+    classDescription : BAG {0..*} OF SO_OGD_Metadata_20230629.ClassDescription; !! Kommt darauf an, ob auch "komplexe" Strukturen möglich/erlaubt sind.
+    fileFormats : BAG {1..*} OF SO_OGD_Metadata_20230629.FileFormat;
+    !!rights : MANDATORY TEXT;
+  END Resource;
+
+
+  TOPIC Offices =
+    OID AS SO_OGD_Metadata_20230629.SOOID;
+
+    CLASS Office EXTENDS SO_OGD_Metadata_20230629.Office_ = 
+      UNIQUE abbreviation, division;
+    END Office;
+  END Offices;
+
+  TOPIC FileFormats = 
+    OID AS SO_OGD_Metadata_20230629.SOOID;
+
+    CLASS FileFormat EXTENDS SO_OGD_Metadata_20230629.FileFormat = 
+      UNIQUE name;
+    END FileFormat;
+  END FileFormats;
+
+
+  TOPIC Datasets =
+
+    CLASS Dataset =
+      identifier : MANDATORY TEXT;
+      title : MANDATORY TEXT;
+      description : MTEXT;
+      furtherInformation : URI;
+      publisher : MANDATORY SO_OGD_Metadata_20230629.Office_;
+      theme : TEXT;
+      keywords : TEXT;
+      startDate : MANDATORY FORMAT INTERLIS.XMLDate "1990-1-1" .. "2100-12-31";
+      endDate : FORMAT INTERLIS.XMLDate "1990-1-1" .. "2100-12-31";
+      resources : BAG {1..*} OF SO_OGD_Metadata_20230629.Resource;
+
+      UNIQUE identifier;
+      !! TODO: resource identifier muss auch unique sein.
+    END Dataset;
+
+  END Datasets;
+
+END SO_OGD_Metadata_20230629.
