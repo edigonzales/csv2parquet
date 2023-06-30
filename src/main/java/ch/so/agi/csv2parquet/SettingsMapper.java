@@ -2,6 +2,8 @@ package ch.so.agi.csv2parquet;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Set;
 
 import org.interlis2.validator.Validator;
@@ -10,11 +12,16 @@ import org.tomlj.TomlParseResult;
 import org.tomlj.TomlTable;
 
 import ch.ehi.basics.settings.Settings;
+import ch.interlis.ili2c.Ili2c;
+import ch.interlis.ili2c.Ili2cException;
+import ch.interlis.ili2c.config.Configuration;
+import ch.interlis.ili2c.metamodel.TransferDescription;
+import ch.interlis.ilirepository.IliManager;
 import ch.interlis.iom_j.csv.CsvReader;
 
 public class SettingsMapper {
 
-    public static Settings run(File configFile, String identifier) throws IOException {
+    public static Settings run(File configFile, String identifier) throws IOException, Ili2cException {
         Settings settings = new Settings();
 
         TomlParseResult tomlContent = Toml.parse(configFile.toPath());
@@ -25,10 +32,18 @@ public class SettingsMapper {
             setSettingsFromTomlTable(tomlContent, settings);
         } else {
             String parentIdentifier = identifier.substring(0, identifier.lastIndexOf("."));
-
             TomlTable parentTable = tomlContent.getTable(parentIdentifier);
+
+            TomlTable resourceTable = tomlContent.getTable(identifier);
+            if (resourceTable != null) {
+                setSettingsFromTomlTable(resourceTable, settings);   
+            }
             
             // TODO wird erst interessant, wenn wir neben tool-config-Daten auch Metadatenauslesen.
+            
+            // In der Methode wird also immer der identifier (oder falls null irgendeins) verwendet.
+            // Falls ein parentTable vorhanden ist, muss man diesen noch behandeln. Gewisse Teile
+            // werden überschrieben? / verschoben?
             if (parentTable != null) {
                 // Theme title von parent
                 // ...
@@ -37,11 +52,13 @@ public class SettingsMapper {
                 // ...
             }
 
-            TomlTable resourceTable = tomlContent.getTable(identifier);
-            if (resourceTable != null) {
-                setSettingsFromTomlTable(resourceTable, settings);   
-            }
         }
+        
+        if (settings.getValue(Validator.SETTING_MODELNAMES) != null) {
+            TransferDescription td = getTransferDescriptionFromModelName(settings.getValue(Validator.SETTING_MODELNAMES), configFile.getParentFile().toPath());
+            settings.setTransientObject(IoxWkfConfig.SETTING_TRANSFERDESCRIPTION, td);
+        }
+        
         return settings;
     }
     
@@ -73,7 +90,7 @@ public class SettingsMapper {
             if (key.endsWith(IoxWkfConfig.INI_MODELS)) {
                 String models = tomlTable.getString(key);
                 if (models != null) {
-                    settings.setValue(Validator.SETTING_MODELNAMES, models);
+                    settings.setValue(Validator.SETTING_MODELNAMES, models);                    
                 }
             }
 
@@ -83,7 +100,34 @@ public class SettingsMapper {
                     settings.setValue(CsvReader.ENCODING, encoding);
                 }
             }
+            
+            if (key.endsWith(IoxWkfConfig.INI_META_TITLE)) {
+                String title = tomlTable.getString(key);
+                if (title != null) {
+                    settings.setValue(IoxWkfConfig.INI_META_TITLE, title);
+                }
+            }
+            
+            //...
         }
     }
+    
+    private static TransferDescription getTransferDescriptionFromModelName(String iliModelName, Path additionalRepository) throws Ili2cException {
+        IliManager manager = new IliManager();        
+        String ilidirs = IoxWkfConfig.SETTING_ILIDIRS_DEFAULT + additionalRepository;
+        String repositories[] = ilidirs.split(";");
+        manager.setRepositories(repositories);
+        ArrayList<String> modelNames = new ArrayList<String>();
+        modelNames.add(iliModelName);
+        Configuration config = manager.getConfig(modelNames, 2.3);
+        TransferDescription td = Ili2c.runCompiler(config);
+
+        if (td == null) {
+            throw new IllegalArgumentException("INTERLIS compiler failed"); // TODO: can this be tested?
+        }
+        
+        return td;
+    }
+
     
 }

@@ -35,5 +35,8 @@ public class IoxWkfConfig {
     public final static String INI_VALUESEPARATOR = "valueSeparator";
     public final static String INI_ENCODING = "encoding";
     public final static String INI_MODELS = "models";
+    public final static String SETTING_TRANSFERDESCRIPTION = "transferDescription";
+    public final static String INI_META_TITLE = "title";
+    public final static String INI_META_DESCRIPTION = "description";
 
 }

@@ -14,7 +14,6 @@ public class Meta2Xtf {
     // TODO: 
     // - 
 
-    
     // Wenn wir eine Config-Datei haben, wird sie bereits geparsed. Man muss einfach
     // noch mehr auslesen und in die Settings schreiben. Und ein paar Konstanten mehr.
     // Meta2Xtf bedingt zwingend ein Modell (nicht bloss eine Config-Datei) -> if().

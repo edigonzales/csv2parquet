@@ -17,50 +17,50 @@ VERSION "2023-06-09" =
     SOOID = OID TEXT*255;
 
   STRUCTURE ModelLink =
-    name : MANDATORY TEXT;  !! Name or Namespace
-    locationHint : URI; !! repo
-    versionHint : TEXT;
+    Name : MANDATORY TEXT;  !! Name or Namespace
+    LocationHint : URI; !! repo
+    VersionHint : TEXT;
   END ModelLink;
 
   STRUCTURE Office_ =
-    agencyName : TEXT;
-    abbreviation : TEXT;
-    division : TEXT;
-    officeAtWeb : URI;
-    email : URI;
-    phone : TEXT;
+    AgencyName : TEXT;
+    Abbreviation : TEXT;
+    Division : TEXT;
+    OfficeAtWeb : URI;
+    Email : URI;
+    Phone : TEXT;
   END Office_;
 
   STRUCTURE FileFormat = 
-    name: MANDATORY TEXT;
-    abbreviation: MANDATORY TEXT;
-    mimeType: MANDATORY TEXT;
-    extension: MANDATORY TEXT;
+    Name: MANDATORY TEXT;
+    Abbreviation: MANDATORY TEXT;
+    MimeType: MANDATORY TEXT;
+    Extension: MANDATORY TEXT;
   END FileFormat;
 
   STRUCTURE AttributeDescription = 
-    name : TEXT; !! so wie er im Modell steht
-    description : MTEXT;
-    dataType : TEXT;
+    Name : TEXT; !! so wie er im Modell steht
+    Description : MTEXT;
+    DataType : TEXT;
     isMandatory : BOOLEAN;
   END AttributeDescription;
 
   STRUCTURE ClassDescription = 
-    name : TEXT; !! entspricht originalem Klassennamen.
-    title : TEXT; !! mittels ilidoc
-    description : MTEXT;
-    attributeDescription : BAG {0..*} OF SO_OGD_Metadata_20230629.AttributeDescription;
+    Name : TEXT; !! entspricht originalem Klassennamen.
+    Title : TEXT; !! mittels ilidoc
+    Description : MTEXT;
+    AttributeDescription : BAG {0..*} OF SO_OGD_Metadata_20230629.AttributeDescription;
   END ClassDescription;
 
   STRUCTURE Resource = 
-    identifier : MANDATORY TEXT;
-    title : MANDATORY TEXT;
-    description : TEXT;
-    model : SO_OGD_Metadata_20230629.ModelLink;
-    configId : TEXT; !! in ilidata.xml
+    Identifier : MANDATORY TEXT;
+    Title : MANDATORY TEXT;
+    Description : TEXT;
+    Model : SO_OGD_Metadata_20230629.ModelLink;
+    ConfigId : TEXT; !! in ilidata.xml
     lastPublishingDate : MANDATORY FORMAT INTERLIS.XMLDate "1990-1-1" .. "2100-12-31";
-    classDescription : BAG {0..*} OF SO_OGD_Metadata_20230629.ClassDescription; !! Kommt darauf an, ob auch "komplexe" Strukturen möglich/erlaubt sind.
-    fileFormats : BAG {1..*} OF SO_OGD_Metadata_20230629.FileFormat;
+    ClassDescription : BAG {0..*} OF SO_OGD_Metadata_20230629.ClassDescription; !! Kommt darauf an, ob auch "komplexe" Strukturen möglich/erlaubt sind.
+    FileFormats : BAG {1..*} OF SO_OGD_Metadata_20230629.FileFormat;
     !!rights : MANDATORY TEXT;
   END Resource;
 
@@ -69,7 +69,7 @@ VERSION "2023-06-09" =
     OID AS SO_OGD_Metadata_20230629.SOOID;
 
     CLASS Office EXTENDS SO_OGD_Metadata_20230629.Office_ = 
-      UNIQUE abbreviation, division;
+      UNIQUE Abbreviation, Division;
     END Office;
   END Offices;
 
@@ -77,7 +77,7 @@ VERSION "2023-06-09" =
     OID AS SO_OGD_Metadata_20230629.SOOID;
 
     CLASS FileFormat EXTENDS SO_OGD_Metadata_20230629.FileFormat = 
-      UNIQUE name;
+      UNIQUE Name;
     END FileFormat;
   END FileFormats;
 
@@ -85,18 +85,18 @@ VERSION "2023-06-09" =
   TOPIC Datasets =
 
     CLASS Dataset =
-      identifier : MANDATORY TEXT;
-      title : MANDATORY TEXT;
-      description : MTEXT;
+      Identifier : MANDATORY TEXT;
+      Title : MANDATORY TEXT;
+      Description : MTEXT;
       furtherInformation : URI;
-      publisher : MANDATORY SO_OGD_Metadata_20230629.Office_;
-      theme : TEXT;
-      keywords : TEXT;
-      startDate : MANDATORY FORMAT INTERLIS.XMLDate "1990-1-1" .. "2100-12-31";
-      endDate : FORMAT INTERLIS.XMLDate "1990-1-1" .. "2100-12-31";
-      resources : BAG {1..*} OF SO_OGD_Metadata_20230629.Resource;
+      Publisher : MANDATORY SO_OGD_Metadata_20230629.Office_;
+      Theme : TEXT;
+      Keywords : TEXT;
+      StartDate : MANDATORY FORMAT INTERLIS.XMLDate "1990-1-1" .. "2100-12-31";
+      EndDate : FORMAT INTERLIS.XMLDate "1990-1-1" .. "2100-12-31";
+      Resources : BAG {1..*} OF SO_OGD_Metadata_20230629.Resource;
 
-      UNIQUE identifier;
+      UNIQUE Identifier;
       !! TODO: resource identifier muss auch unique sein.
     END Dataset;
 
