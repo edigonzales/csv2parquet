@@ -12,3 +12,8 @@
 - constraints? siehe abfall, inkl. Fehlermeldung
 
 - more app-tests
+
+
+## Todo / Ideen
+
+- CSV-Config und Meta wieder trennen. Eventuell Meta zuerst direct XTF. -> Sauberes Modell überlegen, damit auch Dienste abgebildet werden können. Siehe DCAT-AP CH.
