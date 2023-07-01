@@ -28,15 +28,16 @@ public class IoxWkfConfig {
     
     // "Human readable", damit das config.ini file von Menschen verwendet
     // werden kann.
-    
     public final static String INI_SECTION_PARAMETER = "PARAMETER";
     public final static String INI_FIRSTLINE_IS_HEADER = "firstLineIsHeader";
     public final static String INI_VALUEDELIMITER = "valueDelimiter";
     public final static String INI_VALUESEPARATOR = "valueSeparator";
     public final static String INI_ENCODING = "encoding";
     public final static String INI_MODELS = "models";
-    public final static String SETTING_TRANSFERDESCRIPTION = "transferDescription";
-    public final static String INI_META_TITLE = "title";
-    public final static String INI_META_DESCRIPTION = "description";
+//    public final static String SETTING_TRANSFERDESCRIPTION = "transferDescription";
+//    public final static String INI_META_TITLE = "title";
+//    public final static String INI_META_DESCRIPTION = "description";
+//    public final static String INI_META_PARENT_TITLE = "parentTitle";
+//    public final static String INI_META_PARENT_DESCRIPTION = "parentDescription";
 
 }

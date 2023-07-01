@@ -34,16 +34,10 @@ import ch.interlis.ili2c.metamodel.TransferDescription;
 import ch.interlis.ili2c.metamodel.Type;
 import ch.interlis.ilirepository.IliManager;
 
-public class ModelDescription {
-    private static final String ILI_DIR_NAME = "ili";
-
-    private static final List<String> META_TOML_CONFIG_SECTIONS = new ArrayList<String>() {{
-        add("meta");
-        add("config");
-    }};
-
-    public static Map<String, ClassDescription> getDescriptions(String modelName, boolean override, TomlParseResult metaTomlResult, File iliDir) throws IOException, Ili2cException {
-        TransferDescription td = getTransferDescriptionFromModelName(modelName, iliDir.getAbsolutePath());
+public class ModelMetaDescription {
+    
+    public static Map<String, ClassDescription> getDescription(String modelName, File localRepo) throws IOException, Ili2cException {
+        TransferDescription td = getTransferDescriptionFromModelName(modelName, localRepo.getAbsolutePath());
         
         Map<String, ClassDescription> classDescriptions = new HashMap<>();
 
@@ -92,58 +86,57 @@ public class ModelDescription {
                                 continue;
                             }
 
-                            ClassDescription classType = new ClassDescription();
-                            classType.setName(table.getName());
-                            classType.setTitle(table.getMetaValue("title"));
-                            classType.setDescription(table.getDocumentation());
-                            classType.setModelName(modelName);
-                            classType.setTopicName(topic.getName());
+                            ClassDescription classDescribtion = new ClassDescription();
+                            classDescribtion.setName(table.getName());
+                            classDescribtion.setTitle(table.getMetaValue("title"));
+                            classDescribtion.setDescription(table.getDocumentation());
+                            classDescribtion.setModelName(modelName);
+                            classDescribtion.setTopicName(topic.getName());
 
                             Iterator<?> attri = table.getAttributes();
 
                             List<AttributeDescription> attributes = new ArrayList<>();
                             while (attri.hasNext()) {
                                 Object aObj = attri.next();
-                                AttributeDescription attributeType = new AttributeDescription();
+                                AttributeDescription attributeDescription = new AttributeDescription();
 
                                 if (aObj instanceof AttributeDef) {
                                     AttributeDef attr = (AttributeDef) aObj;
-                                    attributeType.setName(attr.getName());
-                                    attributeType.setDescription(attr.getDocumentation());
+                                    attributeDescription.setName(attr.getName());                                    
+                                    attributeDescription.setDescription(attr.getDocumentation());
+                                    attributeDescription.setMandatory(attr.getDomain().isMandatory() ? true : false);
 
                                     Type type = attr.getDomainResolvingAll();
-                                    attributeType.setMandatory(type.isMandatory() ? true : false);
-
                                     if (type instanceof TextType) {
                                         TextType t = (TextType) type; 
-                                        attributeType.setDataType(t.isNormalized() ? DataType.TEXT : DataType.MTEXT);
+                                        attributeDescription.setDataType(t.isNormalized() ? DataType.TEXT : DataType.MTEXT);
                                     } else if (type instanceof NumericType) {
                                         NumericType n = (NumericType) type;
-                                        attributeType.setDataType(n.getMinimum().getAccuracy() == 0 ? DataType.INTEGER : DataType.DOUBLE);
+                                        attributeDescription.setDataType(n.getMinimum().getAccuracy() == 0 ? DataType.INTEGER : DataType.DOUBLE);
                                     } else if (type instanceof EnumerationType) {
                                         EnumerationType e = (EnumerationType) type;
                                         // Wenn man selber BOOLEAN definiert muss man hier nachziehen. Dann muessen
                                         // wohl die Werte ausgelesen werden e.getEnumeration() 
                                         if (attr.isDomainBoolean()) {
-                                            attributeType.setDataType(DataType.BOOLEAN);
+                                            attributeDescription.setDataType(DataType.BOOLEAN);
                                         } else {
-                                            attributeType.setDataType(DataType.ENUMERATION);
+                                            attributeDescription.setDataType(DataType.ENUMERATION);
                                         }
                                     } else if (type instanceof FormattedType) {
                                         FormattedType f = (FormattedType) type;
                                         String format = f.getFormat();
                                         if (format.contains("Year") && !format.contains("Hours")) {
-                                            attributeType.setDataType(DataType.DATE);
+                                            attributeDescription.setDataType(DataType.DATE);
                                         } else if (format.contains("Year") && format.contains("Hours")) {
-                                            attributeType.setDataType(DataType.DATETIME);
+                                            attributeDescription.setDataType(DataType.DATETIME);
                                         }
                                         // else if...
                                     } 
                                 }
-                                attributes.add(attributeType);
+                                attributes.add(attributeDescription);
                             }
-                            classType.setAttributes(attributes);
-                            classDescriptions.put(classType.getQualifiedName(), classType);
+                            classDescribtion.setAttributes(attributes);
+                            classDescriptions.put(classDescribtion.getQualifiedName(), classDescribtion);
                         } // else if... DOMAIN, etc.? DOMAIN nur, falls ich die Werte wirklich ausweisen will.
                     }
                 }
@@ -153,54 +146,6 @@ public class ModelDescription {
         //if (override) overrideModelDescription(classDescriptions, metaTomlResult);
 
         return classDescriptions;
-    }
-
-    /*
-    private static void overrideModelDescription(Map<String, ClassDescription> classDescriptions, TomlParseResult metaTomlResult) {
-        Map<String, Object> metaTomlMap = metaTomlResult.toMap();
-        for (Map.Entry<String, Object> entry : metaTomlMap.entrySet()) {
-            if (!META_TOML_CONFIG_SECTIONS.contains(entry.getKey())) {
-                String modelName = (String) entry.getKey();
-                parseTopicDesc(classDescriptions, modelName, (TomlTable) entry.getValue());
-            }      
-        }
-    }
-    */
-    
-    private static void parseTopicDesc(Map<String, ClassDescription> classDescriptions, String modelName, TomlTable topicDescs) {
-        for (Map.Entry<String, Object> entry : topicDescs.entrySet()) {
-            String topicName = (String) entry.getKey();
-            parseClassDesc(classDescriptions, modelName, topicName, (TomlTable) entry.getValue());   
-        }
-    }
-    
-    private static void parseClassDesc(Map<String, ClassDescription> classDescriptions, String modelName, String topicName, TomlTable classDescs) {
-        for (Map.Entry<String, Object> entry : classDescs.entrySet()) {
-            String className = (String) entry.getKey();
-            
-            TomlTable classDesc = (TomlTable) entry.getValue();
-            String title = classDesc.getString("title");
-            String description = classDesc.getString("description");
-
-            String qualifiedClassName = modelName + "." + topicName + "." + className;
-//            System.out.println("qualifiedClassName: " + qualifiedClassName);
-//            System.out.println("className: " + className);
-//            System.out.println("title: " + title);
-//            System.out.println("description: " + description);
-            
-            ClassDescription classDescription = classDescriptions.get(qualifiedClassName);
-//            System.out.println(classDescription);
-
-            if (classDescription != null) {
-                if (title != null) {
-                    classDescription.setTitle(title);
-                } 
-
-                if (description != null) {
-                    classDescription.setDescription(description);
-                }
-            }               
-        }
     }
 
     private static TransferDescription getTransferDescriptionFromModelName(String modelName, String localRepo) throws  IOException, Ili2cException {

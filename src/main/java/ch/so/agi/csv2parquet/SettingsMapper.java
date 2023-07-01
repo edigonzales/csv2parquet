@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.Set;
 
 import org.interlis2.validator.Validator;
@@ -25,40 +26,54 @@ public class SettingsMapper {
         Settings settings = new Settings();
 
         TomlParseResult tomlContent = Toml.parse(configFile.toPath());
-
+        Map<String,Object> tomlMap = tomlContent.toMap();
+        
         // Falls kein Identifier gesetzt wurde, wird das ganze Toml-File
         // durchsucht und der erste Match verwendet.
         if (identifier == null) {            
             setSettingsFromTomlTable(tomlContent, settings);
         } else {
             String parentIdentifier = identifier.substring(0, identifier.lastIndexOf("."));
-            TomlTable parentTable = tomlContent.getTable(parentIdentifier);
+            TomlTable parentTable = (TomlTable) tomlMap.get(parentIdentifier);
 
-            TomlTable resourceTable = tomlContent.getTable(identifier);
+            TomlTable resourceTable = (TomlTable) tomlMap.get(identifier);            
             if (resourceTable != null) {
                 setSettingsFromTomlTable(resourceTable, settings);   
             }
             
-            // TODO wird erst interessant, wenn wir neben tool-config-Daten auch Metadatenauslesen.
-            
-            // In der Methode wird also immer der identifier (oder falls null irgendeins) verwendet.
-            // Falls ein parentTable vorhanden ist, muss man diesen noch behandeln. Gewisse Teile
-            // werden überschrieben? / verschoben?
-            if (parentTable != null) {
-                // Theme title von parent
-                // ...
-            } else {
-                // Theme title = resource title
-                // ...
-            }
+//            // TODO wird erst interessant, wenn wir neben tool-config-Daten auch Metadatenauslesen.
+//            
+//            // In der Methode wird also immer der identifier (oder falls null irgendeins) verwendet.
+//            // Falls ein parentTable vorhanden ist, muss man diesen noch behandeln. Gewisse Teile
+//            // werden überschrieben? / verschoben?
+//            if (parentTable != null) {
+//                // Theme title von parent
+//                // ...
+//                String title = parentTable.getString(IoxWkfConfig.INI_META_TITLE);
+//                if (title != null) {
+//                    settings.setValue(IoxWkfConfig.INI_META_PARENT_TITLE, title);
+//                }
+//                
+//                String description = parentTable.getString(IoxWkfConfig.INI_META_DESCRIPTION);
+//                if (description != null) {
+//                    settings.setValue(IoxWkfConfig.INI_META_PARENT_DESCRIPTION, description);
+//                }
+//            }
+        }
+        
+//        if (settings.getValue(Validator.SETTING_MODELNAMES) != null) {
+//            TransferDescription td = getTransferDescriptionFromModelName(settings.getValue(Validator.SETTING_MODELNAMES), configFile.getParentFile().toPath());
+//            settings.setTransientObject(IoxWkfConfig.SETTING_TRANSFERDESCRIPTION, td);
+//        }
+//        
+//        
+//        System.out.println(settings);
+        
+//        TomlMapper tomlMapper = new TomlMapper();
+//        tomlMapper.registerModule(new JavaTimeModule());
+//        Map<String, Object> tomlMap = tomlMapper.readValue(configFile, Map.class);
+//        System.out.println(tomlMap);
 
-        }
-        
-        if (settings.getValue(Validator.SETTING_MODELNAMES) != null) {
-            TransferDescription td = getTransferDescriptionFromModelName(settings.getValue(Validator.SETTING_MODELNAMES), configFile.getParentFile().toPath());
-            settings.setTransientObject(IoxWkfConfig.SETTING_TRANSFERDESCRIPTION, td);
-        }
-        
         return settings;
     }
     
@@ -101,12 +116,12 @@ public class SettingsMapper {
                 }
             }
             
-            if (key.endsWith(IoxWkfConfig.INI_META_TITLE)) {
-                String title = tomlTable.getString(key);
-                if (title != null) {
-                    settings.setValue(IoxWkfConfig.INI_META_TITLE, title);
-                }
-            }
+//            if (key.endsWith(IoxWkfConfig.INI_META_TITLE)) {
+//                String title = tomlTable.getString(key);
+//                if (title != null) {
+//                    settings.setValue(IoxWkfConfig.INI_META_TITLE, title);
+//                }
+//            }
             
             //...
         }
