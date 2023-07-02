@@ -41,39 +41,8 @@ public class SettingsMapper {
                 setSettingsFromTomlTable(resourceTable, settings);   
             }
             
-//            // TODO wird erst interessant, wenn wir neben tool-config-Daten auch Metadatenauslesen.
-//            
-//            // In der Methode wird also immer der identifier (oder falls null irgendeins) verwendet.
-//            // Falls ein parentTable vorhanden ist, muss man diesen noch behandeln. Gewisse Teile
-//            // werden überschrieben? / verschoben?
-//            if (parentTable != null) {
-//                // Theme title von parent
-//                // ...
-//                String title = parentTable.getString(IoxWkfConfig.INI_META_TITLE);
-//                if (title != null) {
-//                    settings.setValue(IoxWkfConfig.INI_META_PARENT_TITLE, title);
-//                }
-//                
-//                String description = parentTable.getString(IoxWkfConfig.INI_META_DESCRIPTION);
-//                if (description != null) {
-//                    settings.setValue(IoxWkfConfig.INI_META_PARENT_DESCRIPTION, description);
-//                }
-//            }
         }
         
-//        if (settings.getValue(Validator.SETTING_MODELNAMES) != null) {
-//            TransferDescription td = getTransferDescriptionFromModelName(settings.getValue(Validator.SETTING_MODELNAMES), configFile.getParentFile().toPath());
-//            settings.setTransientObject(IoxWkfConfig.SETTING_TRANSFERDESCRIPTION, td);
-//        }
-//        
-//        
-//        System.out.println(settings);
-        
-//        TomlMapper tomlMapper = new TomlMapper();
-//        tomlMapper.registerModule(new JavaTimeModule());
-//        Map<String, Object> tomlMap = tomlMapper.readValue(configFile, Map.class);
-//        System.out.println(tomlMap);
-
         return settings;
     }
     
@@ -114,35 +83,7 @@ public class SettingsMapper {
                 if (encoding != null) {
                     settings.setValue(CsvReader.ENCODING, encoding);
                 }
-            }
-            
-//            if (key.endsWith(IoxWkfConfig.INI_META_TITLE)) {
-//                String title = tomlTable.getString(key);
-//                if (title != null) {
-//                    settings.setValue(IoxWkfConfig.INI_META_TITLE, title);
-//                }
-//            }
-            
-            //...
+            }            
         }
-    }
-    
-    private static TransferDescription getTransferDescriptionFromModelName(String iliModelName, Path additionalRepository) throws Ili2cException {
-        IliManager manager = new IliManager();        
-        String ilidirs = IoxWkfConfig.SETTING_ILIDIRS_DEFAULT + additionalRepository;
-        String repositories[] = ilidirs.split(";");
-        manager.setRepositories(repositories);
-        ArrayList<String> modelNames = new ArrayList<String>();
-        modelNames.add(iliModelName);
-        Configuration config = manager.getConfig(modelNames, 2.3);
-        TransferDescription td = Ili2c.runCompiler(config);
-
-        if (td == null) {
-            throw new IllegalArgumentException("INTERLIS compiler failed"); // TODO: can this be tested?
-        }
-        
-        return td;
-    }
-
-    
+    }    
 }
