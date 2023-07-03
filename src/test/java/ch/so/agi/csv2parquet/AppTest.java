@@ -85,4 +85,54 @@ class AppTest {
 
         assertEquals(0, exitCode);
     }
+    
+    @Test 
+    public void convert_model_set_ilidata_Ok() throws IOException {
+        // Prepare
+        String csvBaseName = "bewilligte_erdwaermeanlagen";
+        Path csvPath = Paths.get("src/test/data/bewilligte_erdwaermeanlagen/", csvBaseName + ".csv");
+        Path outputPath = Paths.get("build/test/data/app_convert_Ok/");
+        outputPath.toFile().mkdirs();
+        
+        App app = new App();
+        CommandLine cmd = new CommandLine(app);
+
+        StringWriter sw = new StringWriter();
+        cmd.setOut(new PrintWriter(sw));
+
+        // Run
+        int exitCode = cmd.execute("--config=ilidata:ch.so.afu.bewilligte_erdwaermeanlagen.toml",
+                "--input="+csvPath.toString(),
+                "--output="+outputPath.toString());
+        
+        
+        // Validate
+        org.apache.hadoop.fs.Path resultFile = new org.apache.hadoop.fs.Path(Paths
+                .get(outputPath.toString(), FilenameUtils.getBaseName(csvPath.toString()) + ".parquet").toString());
+        ParquetReader<GenericRecord> reader = AvroParquetReader
+                .<GenericRecord>builder(HadoopInputFile.fromPath(resultFile, testConf)).build();
+
+        int recordCount = 0;
+        GenericRecord arecord = reader.read();
+        GenericRecord firstRecord = null;
+        GenericRecord lastRecord = null;
+        while(arecord != null) {
+            if (recordCount == 0) {
+                firstRecord = arecord;
+            }
+            recordCount++;
+            
+            lastRecord = arecord;
+            arecord = reader.read();
+        }
+        
+        assertEquals(31, recordCount);
+        assertEquals(1991, firstRecord.get("jahr"));
+        assertEquals(null, firstRecord.get("internet_clicks_durchschnitt_pro_monat"));        
+        assertEquals(2021, lastRecord.get("jahr"));
+        assertEquals(999, lastRecord.get("internet_clicks_durchschnitt_pro_monat"));
+
+        assertEquals(0, exitCode);
+    }
+
 }
