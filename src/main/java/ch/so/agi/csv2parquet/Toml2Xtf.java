@@ -38,7 +38,6 @@ import ch.interlis.iox_j.StartTransferEvent;
 import ch.so.agi.csv2parquet.meta.AttributeDescription;
 import ch.so.agi.csv2parquet.meta.ClassDescription;
 import ch.so.agi.csv2parquet.meta.ModelMetaDescription;
-import ch.interlis.ili2c.metamodel.TransferDescription;
 
 public class Toml2Xtf {
 
@@ -136,8 +135,8 @@ public class Toml2Xtf {
             Iom_jObject resourceObj = new Iom_jObject(RESOURCE_STRUCTURE_TAG, null);
             resourceObj.setattrvalue("Identifier", resourceIdentifier);
             resourceObj.setattrvalue("Title", resourceTitle);
-            if (resourceDescription != null) resourceObj.setattrvalue("description", resourceDescription);
-            
+            if (resourceDescription != null) resourceObj.setattrvalue("Description", resourceDescription);
+
             Iom_jObject modelObj = new Iom_jObject(MODELLINK_STRUCTURE_TAG, null); 
             modelObj.setattrvalue("Name", models);
             modelObj.setattrvalue("LocationHint", "https://geo.so.ch/models"); 

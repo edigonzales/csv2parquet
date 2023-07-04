@@ -55,7 +55,7 @@ VERSION "2023-06-09" =
   STRUCTURE Resource = 
     Identifier : MANDATORY TEXT;
     Title : MANDATORY TEXT;
-    Description : TEXT;
+    Description : MTEXT;
     Model : SO_OGD_Metadata_20230629.ModelLink;
     ConfigId : TEXT; !! in ilidata.xml
     lastPublishingDate : MANDATORY FORMAT INTERLIS.XMLDate "1900-1-1" .. "2100-12-31";

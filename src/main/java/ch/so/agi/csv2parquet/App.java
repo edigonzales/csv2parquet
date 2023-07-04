@@ -44,7 +44,10 @@ public class App implements Callable<Integer> {
     
     @Option(names = { "--disableValidation" }, defaultValue = "false", required = false, description = "Disable CSV validation (if model ist set).") 
     Boolean disableValidation; 
-        
+
+    @Option(names = { "--meta" }, defaultValue = "false", required = false, description = "Create metadata file.") 
+    Boolean meta; 
+    
     @Option(names = { "--trace" }, defaultValue = "false", required = false, description = "Enable trace logging.") 
     Boolean trace;
     
@@ -92,6 +95,12 @@ public class App implements Callable<Integer> {
             if (!validationOk) {
                 return 2;
             }
+        }
+        
+        // TODO Exception handling im Vergleich zu anderen Klassen?!
+        if (meta && settings.getValue(Validator.SETTING_MODELNAMES)!=null) {
+            Toml2Xtf toml2Xtf = new Toml2Xtf();
+            toml2Xtf.run(configFile, outputDir.toPath());
         }
         
         Csv2Parquet csv2parquet = new Csv2Parquet();

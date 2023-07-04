@@ -22,7 +22,7 @@ public class Toml2XtfTest {
 //        Path configPath = Paths.get("src/test/data/bewilligte_erdwaermeanlagen/ch.so.afu.bewilligte_erdwaermeanlagen.toml");
 //        Path configPath = Paths.get("src/test/data/steuerfuesse/ch.so.agem.steuerfuesse.toml");
         Path configPath = Paths.get("src/test/data/kantonale_gebaeude/ch.so.hba.kantonale_gebaeude.toml");
-        Path outputPath = Paths.get("build/test/data/toml2xtf/dummy");
+        Path outputPath = Paths.get("build/test/data/toml2xtf/");
         outputPath.toFile().mkdirs();
 
         // Run

@@ -67,8 +67,8 @@ run {
     //args = ["--trace", "--config=src/test/data/bewilligte_erdwaermeanlagen/ch.so.afu.bewilligte_erdwaermeanlagen.toml", "--id=ch.so.afu.bewilligte_erdwaermeanlagen", "--input=src/test/data/bewilligte_erdwaermeanlagen/bewilligte_erdwaermeanlagen.csv", "--output=build/"]
     //args = ["--trace", "--config=src/test/data/bewilligte_erdwaermeanlagen/ch.so.afu.bewilligte_erdwaermeanlagen.toml", "--input=src/test/data/bewilligte_erdwaermeanlagen/bewilligte_erdwaermeanlagen.csv", "--output=build/"]
     //args = ["--trace", "--config=src/test/data/abfallmengen_gemeinden/ch.so.afu.abfallmengen_gemeinden.toml", "--input=src/test/data/abfallmengen_gemeinden/abfallmengen_gemeinden.csv", "--output=build/"]
-    //args = ["--trace", "--config=src/test/data/steuerfuesse/ch.so.agem.steuerfuesse.toml", "--id=ch.so.agem.steuerfuesse.natuerliche_personen", "--input=src/test/data/steuerfuesse/ch.so.agem.steuerfuesse.natuerliche_personen.csv", "--output=build/"]
-    args = ["--trace", "--config=src/test/data/kantonale_gebaeude/ch.so.hba.kantonale_gebaeude.toml", "--input=src/test/data/kantonale_gebaeude/20230124_sap_Gebaeude.csv", "--output=build/"]
+    args = ["--trace", "--config=src/test/data/steuerfuesse/ch.so.agem.steuerfuesse.toml", "--id=ch.so.agem.steuerfuesse.natuerliche_personen", "--input=src/test/data/steuerfuesse/ch.so.agem.steuerfuesse.natuerliche_personen.csv", "--meta", "--output=build/"]
+    //args = ["--trace", "--config=src/test/data/kantonale_gebaeude/ch.so.hba.kantonale_gebaeude.toml", "--input=src/test/data/kantonale_gebaeude/20230124_sap_Gebaeude.csv", "--output=build/"]
 
 
 }
