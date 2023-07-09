@@ -59,14 +59,16 @@ public class App implements Callable<Integer> {
         // TODO
         // Fake it, till you make it.
         // Zukünftig soll ilidata aus einem INTERLIS-Repo geladen werden.
-        File configFile;
-        if (configFileName.startsWith("ilidata")) {
-            configFile = Utils.copyResourceToTmpDir(configFileName.split(":")[1]);
-            if (configFile != null) {
-                EhiLogger.traceState("config file <"+configFile.getAbsolutePath()+">.");                
+        File configFile = null;
+        if (configFileName != null) {
+            if (configFileName.startsWith("ilidata")) {
+                configFile = Utils.copyResourceToTmpDir(configFileName.split(":")[1]);
+                if (configFile != null) {
+                    EhiLogger.traceState("config file <"+configFile.getAbsolutePath()+">.");                
+                }            
+            } else {
+                configFile = new File(configFileName);
             }            
-        } else {
-            configFile = new File(configFileName);
         }
 
         // Config-File parsen und die Prosanamen der Parameter auf die technischen Namen mappen.
