@@ -47,7 +47,10 @@ public class App implements Callable<Integer> {
 
     @Option(names = { "--meta" }, defaultValue = "false", required = false, description = "Create metadata file.") 
     Boolean meta; 
-    
+
+    @Option(names = { "--excel" }, defaultValue = "false", required = false, description = "Create excel file.") 
+    Boolean excel; 
+
     @Option(names = { "--trace" }, defaultValue = "false", required = false, description = "Enable trace logging.") 
     Boolean trace;
     
@@ -107,6 +110,11 @@ public class App implements Callable<Integer> {
         
         Csv2Parquet csv2parquet = new Csv2Parquet();
         boolean failed = csv2parquet.run(csvFile.toPath(), outputDir.toPath(), settings);
+        
+        if (excel && !failed) {
+            Csv2Excel csv2excel = new Csv2Excel();
+            failed = csv2excel.run(csvFile.toPath(), outputDir.toPath(), settings);
+        }
 
         return failed ? 3 : 0;
     }

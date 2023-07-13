@@ -37,6 +37,7 @@ dependencies {
     implementation 'ch.interlis:ilivalidator:1.13.3'
     implementation 'ch.interlis:iox-ili:1.21.18'
     implementation 'io.github.sogis:iox-parquet:0.0.20'
+    implementation 'io.github.sogis:iox-excel:0.0.2'
     implementation 'commons-io:commons-io:2.13.0'
     implementation 'org.tomlj:tomlj:1.1.0'
     
@@ -66,10 +67,10 @@ run {
     //args = ["--trace", "--config=src/test/data/amtliche_vermessung_statistik/ch.so.agi.amtliche_vermessung_statistik.toml", "--id=ch.so.agi.amtliche_vermessung_statistik.personal", "--input=src/test/data/amtliche_vermessung_statistik/amtliche_vermessung_personal.csv", "--output=build/"]
     //args = ["--trace", "--config=src/test/data/bewilligte_erdwaermeanlagen/ch.so.afu.bewilligte_erdwaermeanlagen.toml", "--id=ch.so.afu.bewilligte_erdwaermeanlagen", "--input=src/test/data/bewilligte_erdwaermeanlagen/bewilligte_erdwaermeanlagen.csv", "--output=build/"]
     //args = ["--trace", "--config=src/test/data/bewilligte_erdwaermeanlagen/ch.so.afu.bewilligte_erdwaermeanlagen.toml", "--input=src/test/data/bewilligte_erdwaermeanlagen/bewilligte_erdwaermeanlagen.csv", "--output=build/"]
-    //args = ["--trace", "--config=src/test/data/abfallmengen_gemeinden/ch.so.afu.abfallmengen_gemeinden.toml", "--input=src/test/data/abfallmengen_gemeinden/abfallmengen_gemeinden.csv", "--output=build/"]
+    args = ["--trace", "--excel", "--config=src/test/data/abfallmengen_gemeinden/ch.so.afu.abfallmengen_gemeinden.toml", "--input=src/test/data/abfallmengen_gemeinden/abfallmengen_gemeinden.csv", "--output=build/"]
     //args = ["--trace", "--config=src/test/data/steuerfuesse/ch.so.agem.steuerfuesse.toml", "--id=ch.so.agem.steuerfuesse.natuerliche_personen", "--input=src/test/data/steuerfuesse/ch.so.agem.steuerfuesse.natuerliche_personen.csv", "--meta", "--output=build/"]
     //args = ["--trace", "--config=src/test/data/kantonale_gebaeude/ch.so.hba.kantonale_gebaeude.toml", "--input=src/test/data/kantonale_gebaeude/20230124_sap_Gebaeude.csv", "--output=build/"]
-args = ["--trace", "--input=src/test/data/bewilligte_erdwaermeanlagen/bewilligte_erdwaermeanlagen.csv"]
+    //args = ["--trace", "--input=src/test/data/bewilligte_erdwaermeanlagen/bewilligte_erdwaermeanlagen.csv"]
 
 }
 
